@@ -1,0 +1,15 @@
+Flask
+Flask-JWT-Extended
+Flask-SocketIO
+Flask-Cors
+pymongo
+python-dotenv
+qrcode
+Pillow
+dnspython
+gunicorn
+eventlet
+pytest
+flask
+passlib
+pylance
