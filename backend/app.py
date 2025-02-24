@@ -1,6 +1,7 @@
 from flask import Flask, render_template
+from routes.auth_routes import auth_routes
 app=Flask(__name__)
- 
+app.register_blueprint(auth_routes)
 
 
 if __name__ == '__main__':
