@@ -35,7 +35,7 @@
 ## Project Structure
 
 ```
-qr-attendance-app/
+Attendance-app/
 │── backend/                     # Flask backend
 │   ├── app.py                   # Main Flask app
 │   ├── config.py                # Configuration settings (MongoDB, Heroku settings)
