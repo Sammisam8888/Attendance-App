@@ -34,6 +34,9 @@ dependencies:
   path_provider: ^2.0.12 # Replace with the actual latest stable version
   cupertino_icons: ^1.0.8
   http: ^1.1.0 # Replace with the actual latest stable version
+  camera: ^0.10.0+1  # Add camera package for face scanning
+  image_picker: ^0.8.4+4  # Add image picker package for face scanning
+  qr_code_scanner_plus: ^2.0.10+1  # Add QR code scanner package
 
 dev_dependencies:
   flutter_test:
