@@ -82,6 +82,9 @@ Attendance-app/
 │   ├── pubspec.yaml              # Flutter dependencies
 │   ├── android/                  # Android-specific files
 │   ├── ios/                      # iOS-specific files
+│   ├── web/                      # Web-specific files
+│   ├── build/                    # Build outputs
+│   ├── test/                     # Unit tests for frontend
 │
 │── .gitignore                    # Ignore unnecessary files
 │── README.md                      # Project documentation

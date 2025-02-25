@@ -31,3 +31,4 @@ qrcode
 simple-websocket
 Werkzeug
 wsproto
+pyqrcode
