@@ -3,6 +3,8 @@ import 'fingerprint_scan.dart';
 import 'fingerprint_auth.dart';
 
 class LoginScreen extends StatelessWidget {
+  const LoginScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -4,6 +4,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class FingerprintScanScreen extends StatefulWidget {
+  const FingerprintScanScreen({super.key});
+
   @override
   _FingerprintScanScreenState createState() => _FingerprintScanScreenState();
 }

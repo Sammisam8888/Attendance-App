@@ -4,7 +4,7 @@ class FingerprintWidget extends StatelessWidget {
   final Function onTap;
   final String buttonText;
 
-  FingerprintWidget({required this.onTap, required this.buttonText});
+  const FingerprintWidget({super.key, required this.onTap, required this.buttonText});
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,8 @@ import 'package:local_auth/local_auth.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -13,6 +15,8 @@ class MyApp extends StatelessWidget {
 }
 
 class FingerprintAuthScreen extends StatefulWidget {
+  const FingerprintAuthScreen({super.key});
+
   @override
   _FingerprintAuthScreenState createState() => _FingerprintAuthScreenState();
 }
