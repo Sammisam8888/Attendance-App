@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 from passlib.hash import pbkdf2_sha256 as sha256
-from ..database import db
+from database import db
 import uuid
 
 

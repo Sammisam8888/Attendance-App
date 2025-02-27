@@ -1,81 +1,50 @@
 from flask import Blueprint, request, jsonify
-from pymongo import MongoClient
-import time
-import os
+from models.attendance_model import AttendanceModel
 
-# Create Blueprint
-attendance_routes = Blueprint("attendance_routes", __name__)
+attendance_routes = Blueprint('attendance_routes', __name__)
 
-# Connect to MongoDB
-mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
-client = MongoClient(mongo_uri)
-db = client["attendance_db"]  # Database name
-attendance_collection = db["attendance"]  # Collection to store attendance records
-
-# Allowed delay for valid QR codes (in seconds)
-QR_CODE_EXPIRY = 10  
-
-# Store last scanned QR codes to prevent duplicates
-recent_qr_scans = set()
-
-@attendance_routes.route("/mark_attendance", methods=["POST"])
+@attendance_routes.route('/mark_attendance', methods=['POST'])
 def mark_attendance():
-    """
-    Student scans the QR code and sends:
-    {
-        "qr_data": "attendance_code_1684367890",
-        "student_id": "student123"
-    }
-    """
-    data = request.get_json()
-    qr_data = data.get("qr_data")
-    student_id = data.get("student_id")
+    data = request.json
+    email = data.get('email')
+    name = data.get('name')
+    roll_no = data.get('roll_no')
+    timestamp = data.get('timestamp')
+    
+    if not email or not name or not roll_no or not timestamp:
+        return jsonify({"message": "Missing data"}), 400
+    
+    AttendanceModel.mark_attendance(email, name, roll_no, timestamp)
+    return jsonify({"message": "Attendance marked successfully"}), 200
 
-    if not qr_data or not student_id:
-        return jsonify({"msg": "Missing required data"}), 400
+@attendance_routes.route('/get_all_attendance', methods=['GET'])
+def get_all_attendance():
+    attendance_records = AttendanceModel.get_all_attendance()
+    return jsonify(attendance_records), 200
 
-    try:
-        prefix, qr_timestamp = qr_data.split("_code_")
-        qr_timestamp = int(qr_timestamp)
-    except Exception as e:
-        return jsonify({"msg": "Invalid QR data", "error": str(e)}), 400
+@attendance_routes.route('/get_attendance_by_email', methods=['GET'])
+def get_attendance_by_email():
+    email = request.args.get('email')
+    if not email:
+        return jsonify({"message": "Email is required"}), 400
+    
+    attendance_records = AttendanceModel.get_attendance_by_field('email', email)
+    return jsonify(attendance_records), 200
 
-    current_timestamp = int(time.time())
+@attendance_routes.route('/get_attendance_by_roll_no', methods=['GET'])
+def get_attendance_by_roll_no():
+    roll_no = request.args.get('roll_no')
+    if not roll_no:
+        return jsonify({"message": "Roll number is required"}), 400
+    
+    attendance_records = AttendanceModel.get_attendance_by_field('roll_no', roll_no)
+    return jsonify(attendance_records), 200
 
-    # Validate QR Code Expiry
-    if abs(current_timestamp - qr_timestamp) > QR_CODE_EXPIRY:
-        return jsonify({"msg": "QR code expired"}), 400
-
-    # Prevent Duplicate Scans
-    if qr_data in recent_qr_scans:
-        return jsonify({"msg": "Duplicate scan detected"}), 400
-    recent_qr_scans.add(qr_data)
-
-    # Store Attendance in MongoDB (LIFO Order)
-    attendance_collection.insert_one({
-        "student_id": student_id,
-        "qr_timestamp": qr_timestamp,
-        "scanned_timestamp": current_timestamp,
-    })
-
-    return jsonify({
-        "msg": "Attendance marked successfully",
-        "student_id": student_id,
-        "scanned_timestamp": current_timestamp
-    }), 200
-
-
-@attendance_routes.route("/get_attendance", methods=["GET"])
-def get_attendance():
-    """
-    Get the real-time attendance list (LIFO - Last In First Out)
-    """
-    records = attendance_collection.find().sort("scanned_timestamp", -1)  # LIFO Order
-    attendance_list = [
-        {
-            "student_id": record["student_id"],
-            "timestamp": record["scanned_timestamp"]
-        }
-        for record in records
-    ]
-    return jsonify({"attendance": attendance_list}), 200
+@attendance_routes.route('/delete_attendance_by_email', methods=['DELETE'])
+def delete_attendance_by_email():
+    email = request.args.get('email')
+    if not email:
+        return jsonify({"message": "Email is required"}), 400
+    
+    AttendanceModel.delete_attendance_by_email(email)
+    return jsonify({"message": "Attendance records deleted successfully"}), 200
