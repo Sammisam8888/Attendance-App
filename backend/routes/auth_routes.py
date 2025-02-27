@@ -14,3 +14,12 @@ def login():
     student = Student()
     response = student.login()
     return response
+
+@auth_routes.route('/teacher/signup', methods=['POST'])
+def teacher_signup():
+    return 
+
+
+@auth_routes.route('/teacher/login', methods=['POST'])
+def teacher_login():
+    return
