@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 auth_routes = Blueprint('auth_routes', __name__)
-from ..models.user_model import Student, Teacher
-from ..database import db
+from models.user_model import Student, Teacher
+from database import db
 
 @auth_routes.route('/student/signup', methods=['POST'])
 def student_signup():

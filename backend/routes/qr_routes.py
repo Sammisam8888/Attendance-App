@@ -1,6 +1,6 @@
 from flask import Flask, send_file, jsonify, Blueprint, request
-from ..utils.qr_generator import generate_qr, generate_token
-from ..models.user_model import Student
+from utils.qr_generator import generate_qr, generate_token
+from models.user_model import Student
 import time
 
 qr_routes = Blueprint('qr_routes', __name__)
@@ -27,6 +27,3 @@ def verify_qr():
                 "timestamp": timestamp
             }), 200
     return jsonify({"message": "Invalid or Expired QR Code", "status": "failed"}), 400
-
-if __name__ == '__main__':
-    qr_routes.run(debug=True)

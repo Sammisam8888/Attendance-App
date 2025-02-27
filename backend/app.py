@@ -1,9 +1,9 @@
 from flask import Flask
-from .routes.auth_routes import auth_routes
-from .routes.qr_routes import qr_routes
-from .routes.face_scanner_routes import face_scanner_routes
-from .routes.attendance_routes import attendance_routes
-from .utils.qr_generator import qr_generator
+from routes.auth_routes import auth_routes
+from routes.qr_routes import qr_routes
+from routes.face_scanner_routes import face_scanner_routes
+from routes.attendance_routes import attendance_routes
+from utils.qr_generator import qr_generator
 
 app = Flask(__name__)
 

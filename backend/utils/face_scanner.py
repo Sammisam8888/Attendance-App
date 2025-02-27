@@ -152,18 +152,4 @@ def recognize_user():
     cap.release()
     cv2.destroyAllWindows()
 
-@app.route('/train', methods=['POST'])
-def train_route():
-    name = request.json.get('name')
-    if not name:
-        return jsonify({"error": "Name is required"}), 400
-    train_user(name)
-    return jsonify({"message": f"User {name} registered successfully!"}), 200
 
-@app.route('/recognize', methods=['GET'])
-def recognize_route():
-    recognize_user()
-    return jsonify({"message": "Recognition process completed"}), 200
-
-if __name__ == "__main__":
-    app.run(debug=True)
