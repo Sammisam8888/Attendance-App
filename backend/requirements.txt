@@ -31,3 +31,8 @@ qrcode
 simple-websocket
 Werkzeug
 wsproto
+dlib
+dnspython
+opencv-python
+
+
