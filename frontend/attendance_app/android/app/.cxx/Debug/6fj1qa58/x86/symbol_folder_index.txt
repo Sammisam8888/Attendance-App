@@ -1,0 +1,1 @@
+/home/sammisam8888/Desktop/Attendance-App/frontend/attendance_app/build/app/intermediates/cxx/Debug/6fj1qa58/obj/x86

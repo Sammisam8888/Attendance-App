@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'success_view.dart'; // Import the success screen
+import 'teacher_dashboard.dart';
+import 'student_dashboard.dart';
 
 class FaceScanScreen extends StatefulWidget {
   const FaceScanScreen({super.key, required this.qrCode}); // Convert 'key' to a super parameter
 
   final String qrCode; // The validated QR code
-
   @override
   FaceScanScreenState createState() => FaceScanScreenState();
 }
@@ -48,9 +49,18 @@ class FaceScanScreenState extends State<FaceScanScreen> {
         );
       }
     } else {
+      final result = jsonDecode(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Face verification failed ❌')),
+        SnackBar(content: Text(result["message"] ?? "Login Failed ❌")),
       );
+
+      if (mounted) {
+        if (result["role"] == 'Teacher') {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TeacherDashboard()));
+        } else {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentDashboard()));
+        }
+      }
     }
   }
 

@@ -25,7 +25,7 @@ class StudentDashboardState extends State<StudentDashboard> {
 
       // Validate QR Code with backend
       bool isValid = await _sendQRToBackend(scanData.code ?? "");
-      
+
       if (!mounted) return; // Add this check before using BuildContext
 
       if (isValid) {
@@ -66,6 +66,12 @@ class StudentDashboardState extends State<StudentDashboard> {
       );
       return false; // QR verification failed
     }
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
   }
 
   @override

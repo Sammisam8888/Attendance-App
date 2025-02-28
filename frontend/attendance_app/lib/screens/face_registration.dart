@@ -15,7 +15,9 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
   CameraController? _cameraController;
   bool isCapturing = false;
   int imageCount = 0;
-  final Logger _logger = Logger('FaceRegistrationScreenState');
+  
+  final Logger _logger = Logger('FaceRegistrationScreenState'); // not required logger file - experimental
+
 
   Future<void> _initializeCamera() async {
     try {
@@ -71,11 +73,14 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
       var response = await request.send();
 
       if (response.statusCode == 200) {
+        // print("Image uploaded successfully");
         _logger.info("Image uploaded successfully");
       } else {
+        // print("Failed to upload image: ${response.statusCode}");
         _logger.warning("Failed to upload image: ${response.statusCode}");
       }
     } catch (e) {
+      // print("Error sending image to backend: $e");
       _logger.severe("Error sending image to backend: $e");
     }
   }
