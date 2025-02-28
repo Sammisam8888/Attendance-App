@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'FaceScanScreen.dart'; // Import the face recognition screen
+import 'face_scan_view.dart'; // Import the face recognition screen
 
 class StudentDashboard extends StatefulWidget {
   @override

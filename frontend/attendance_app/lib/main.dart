@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'screens/LoginScreen.dart';
-import 'screens/RegisterScreen.dart';
-import 'screens/TeacherDashboard.dart';
-import 'screens/StudentDashboard.dart';
-import 'screens/FaceRegistration.dart';
+import 'screens/login_view.dart';
+import 'screens/register_view.dart';
+import 'screens/teacher_dashboard.dart';
+import 'screens/student_dashboard.dart';
+import 'screens/face_registration.dart';
 
 void main() {
   runApp(MyApp());

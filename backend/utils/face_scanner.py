@@ -1,5 +1,5 @@
 import cv2
-import dlib
+# import dlib
 import numpy as np
 import sqlite3
 import time

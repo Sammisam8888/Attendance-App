@@ -3,6 +3,7 @@ from utils.face_scanner import train_user, recognize_user
 
 face_scanner_routes = Blueprint('face_scanner_routes', __name__)
 
+#the facescanner routes will be within teacher interface
 @face_scanner_routes.route('/train', methods=['POST'])
 def train():
     data = request.json
