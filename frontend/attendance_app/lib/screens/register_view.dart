@@ -3,11 +3,13 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key}); // Convert 'key' to a super parameter
+
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  RegisterScreenState createState() => RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _rollNumberController = TextEditingController();
   final _emailController = TextEditingController();
@@ -29,11 +31,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     final result = jsonDecode(response.body);
     if (response.statusCode == 201) {
+      if (!mounted) return; // Add this check before using BuildContext
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result["message"] ?? "Registration Successful ✅")),
       );
-      Navigator.pop(context); // Navigate back to login after successful registration
+      if (mounted) {
+        Navigator.pop(context); // Navigate back to login after successful registration
+      }
     } else {
+      if (!mounted) return; // Add this check before using BuildContext
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result["message"] ?? "Registration Failed ❌")),
       );

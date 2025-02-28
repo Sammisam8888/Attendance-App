@@ -2,16 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 class FaceRegistration extends StatefulWidget {
+  const FaceRegistration({super.key});
+
   @override
-  _FaceRegistrationScreenState createState() => _FaceRegistrationScreenState();
+  FaceRegistrationScreenState createState() => FaceRegistrationScreenState();
 }
 
-class _FaceRegistrationScreenState extends State<FaceRegistration> {
+class FaceRegistrationScreenState extends State<FaceRegistration> {
   CameraController? _cameraController;
   bool isCapturing = false;
   int imageCount = 0;
+  final Logger _logger = Logger('FaceRegistrationScreenState');
 
   Future<void> _initializeCamera() async {
     try {
@@ -24,10 +28,10 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
         await _cameraController!.initialize();
         setState(() {});
       } else {
-        print("No cameras found");
+        _logger.warning("No cameras found");
       }
     } catch (e) {
-      print("Camera initialization failed: $e");
+      _logger.severe("Camera initialization failed: $e");
     }
   }
 
@@ -44,15 +48,17 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
         imageCount++;
         await Future.delayed(Duration(milliseconds: 500));
       } catch (e) {
-        print("Error capturing image: $e");
+        _logger.severe("Error capturing image: $e");
       }
     }
 
     isCapturing = false;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => StudentDashboard()),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => StudentDashboard()),
+      );
+    }
   }
 
   Future<void> _sendImageToBackend(XFile image) async {
@@ -65,12 +71,12 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        print("Image uploaded successfully");
+        _logger.info("Image uploaded successfully");
       } else {
-        print("Failed to upload image: ${response.statusCode}");
+        _logger.warning("Failed to upload image: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error sending image to backend: $e");
+      _logger.severe("Error sending image to backend: $e");
     }
   }
 

@@ -4,15 +4,15 @@ import 'dart:convert';
 import 'success_view.dart'; // Import the success screen
 
 class FaceScanScreen extends StatefulWidget {
+  const FaceScanScreen({super.key, required this.qrCode}); // Convert 'key' to a super parameter
+
   final String qrCode; // The validated QR code
 
-  FaceScanScreen({required this.qrCode});
-
   @override
-  _FaceScanScreenState createState() => _FaceScanScreenState();
+  FaceScanScreenState createState() => FaceScanScreenState();
 }
 
-class _FaceScanScreenState extends State<FaceScanScreen> {
+class FaceScanScreenState extends State<FaceScanScreen> {
   bool isLoading = false;
 
   Future<void> _verifyFace() async {
@@ -29,6 +29,8 @@ class _FaceScanScreenState extends State<FaceScanScreen> {
       body: jsonEncode({"qr_code": widget.qrCode}), // Send QR code for verification
     );
 
+    if (!mounted) return; // Add this check before using BuildContext
+
     setState(() {
       isLoading = false;
     });
@@ -37,12 +39,14 @@ class _FaceScanScreenState extends State<FaceScanScreen> {
       final result = jsonDecode(response.body);
 
       // Navigate to SuccessScreen after face verification
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => SuccessScreen(subject: result['subject'] ?? "Unknown Subject"),
-        ),
-      );
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SuccessScreen(subject: result['subject'] ?? "Unknown Subject"),
+          ),
+        );
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Face verification failed ❌')),

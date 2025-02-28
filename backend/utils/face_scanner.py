@@ -1,12 +1,9 @@
 import cv2
-# import dlib
+import dlib
 import numpy as np
 import sqlite3
 import time
 import os
-from flask import Flask, request, jsonify
-
-app = Flask(__name__)
 
 # Print the OpenCV version
 print("OpenCV version:", cv2.__version__)
@@ -152,4 +149,13 @@ def recognize_user():
     cap.release()
     cv2.destroyAllWindows()
 
+# Main Execution
+# if __name__ == "__main__":
+#     operation = input("Enter operation (train/test): ").strip().lower()
 
+#     if operation == "train":
+#         user_name = input("Enter your name: ").strip()
+#         train_user(user_name)
+
+#     elif operation == "test":
+#         recognize_user()
