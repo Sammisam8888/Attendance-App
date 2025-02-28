@@ -1,51 +1,32 @@
 plugins {
-<<<<<<< HEAD:frontend/attendance_app/android/app/build.gradle.kts
-    id("com.android.application")
-    id("kotlin-android")
-    id("dev.flutter.flutter-gradle-plugin") // Flutter Gradle Plugin
-=======
-    id "com.android.application"
-    id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
-    id "dev.flutter.flutter-gradle-plugin"
->>>>>>> 697e1adc92334cfc53c04454617885398f909b3a:frontend/attendance_app/android/app/build.gradle
+    id 'com.android.application'
+    id 'kotlin-android'
 }
 
 android {
-    namespace = "com.example.attendance_app"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = "27.0.12077973" // Updated NDK version
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
-    }
+    compileSdkVersion 30
 
     defaultConfig {
-        applicationId = "com.example.attendance_app"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        applicationId "com.example.attendance_app"
+        minSdkVersion 16
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
     }
 
     buildTypes {
         release {
-<<<<<<< HEAD:frontend/attendance_app/android/app/build.gradle.kts
-            signingConfig = signingConfigs.getByName("debug")
-=======
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
->>>>>>> 697e1adc92334cfc53c04454617885398f909b3a:frontend/attendance_app/android/app/build.gradle
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
-flutter {
-    source = "../.."
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.google.firebase:firebase-analytics:17.2.2'
 }
+
+apply plugin: 'com.google.gms.google-services'

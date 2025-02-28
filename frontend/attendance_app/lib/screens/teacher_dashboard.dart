@@ -5,14 +5,14 @@ import 'dart:convert';
 import 'package:logging/logging.dart';
 
 class TeacherDashboard extends StatefulWidget {
-  const TeacherDashboard({super.key}); // Convert 'key' to a super parameter
+  const TeacherDashboard({super.key});
 
   @override
   TeacherDashboardState createState() => TeacherDashboardState();
 }
 
 class TeacherDashboardState extends State<TeacherDashboard> {
-  String qrImageUrl = 'http://127.0.0.1:5000/generate_qr'; // Update with your backend URL
+  String qrImageUrl = 'http://127.0.0.1:5000/generate_qr';
   List<Map<String, String>> studentList = [];
   Timer? _qrTimer;
   Timer? _attendanceTimer;
@@ -25,9 +25,9 @@ class TeacherDashboardState extends State<TeacherDashboard> {
     _startAttendanceFetch();
   }
 
-  // Auto-refresh the QR image every second
+  // Refresh the QR image every 10 seconds
   void _startQrRefresh() {
-    _qrTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+    _qrTimer = Timer.periodic(Duration(seconds: 10), (timer) {
       setState(() {
         qrImageUrl = 'http://127.0.0.1:5000/generate_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
       });
@@ -37,7 +37,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   // Fetch updated attendance list every 3 seconds
   void _startAttendanceFetch() {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('http://127.0.0.1:5000/get_attendance'); // Update with your backend URL
+      final url = Uri.parse('http://127.0.0.1:5000/get_attendance');
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {
@@ -59,8 +59,8 @@ class TeacherDashboardState extends State<TeacherDashboard> {
 
   @override
   void dispose() {
-    _qrTimer?.cancel(); // Stop refreshing when the page is closed
-    _attendanceTimer?.cancel(); // Stop fetching attendance when closed
+    _qrTimer?.cancel();
+    _attendanceTimer?.cancel();
     super.dispose();
   }
 
@@ -76,7 +76,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
             SizedBox(height: 20),
             Image.network(
               qrImageUrl,
-              key: ValueKey(qrImageUrl), // Forces the image to refresh
+              key: ValueKey(qrImageUrl),
               width: 200,
               height: 200,
               errorBuilder: (context, error, stackTrace) {
