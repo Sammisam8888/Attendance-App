@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'face_scan_view.dart'; // Import the face recognition screen
 
 class StudentDashboard extends StatefulWidget {
+  const StudentDashboard({super.key}); // Convert 'key' to a super parameter
+
   @override
   StudentDashboardState createState() => StudentDashboardState();
 }
@@ -24,14 +26,18 @@ class StudentDashboardState extends State<StudentDashboard> {
       // Validate QR Code with backend
       bool isValid = await _sendQRToBackend(scanData.code ?? "");
       
+      if (!mounted) return; // Add this check before using BuildContext
+
       if (isValid) {
         // Navigate to FaceScanScreen for face recognition
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FaceScanScreen(qrCode: scanData.code ?? ""),
-          ),
-        );
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FaceScanScreen(qrCode: scanData.code ?? ""),
+            ),
+          );
+        }
       }
     });
   }
@@ -64,7 +70,11 @@ class StudentDashboardState extends State<StudentDashboard> {
         }
       }
     }
+<<<<<<< HEAD
   
+=======
+  }
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
 
   @override
   Widget build(BuildContext context) {

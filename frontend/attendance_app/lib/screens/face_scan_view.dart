@@ -7,6 +7,10 @@ class FaceScanScreen extends StatefulWidget {
   const FaceScanScreen({super.key, required this.qrCode}); // Convert 'key' to a super parameter
 
   final String qrCode; // The validated QR code
+<<<<<<< HEAD
+=======
+
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
   @override
   FaceScanScreenState createState() => FaceScanScreenState();
 }
@@ -29,8 +33,29 @@ class FaceScanScreenState extends State<FaceScanScreen> {
     );
 
     if (!mounted) return; // Add this check before using BuildContext
+<<<<<<< HEAD
 
     if (response.statusCode == 200) {
+=======
+
+    setState(() {
+      isLoading = false;
+    });
+
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+
+      // Navigate to SuccessScreen after face verification
+      if (mounted) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => SuccessScreen(subject: result['subject'] ?? "Unknown Subject"),
+          ),
+        );
+      }
+    } else {
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result["message"] ?? "Login Successful ✅")),
       );

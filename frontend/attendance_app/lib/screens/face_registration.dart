@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 class FaceRegistration extends StatefulWidget {
+  const FaceRegistration({super.key});
+
   @override
   FaceRegistrationScreenState createState() => FaceRegistrationScreenState();
 }
@@ -12,9 +15,13 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
   CameraController? _cameraController;
   bool isCapturing = false;
   int imageCount = 0;
+<<<<<<< HEAD
   
   final Logger _logger = Logger('FaceRegistrationScreenState'); // not required logger file - experimental
 
+=======
+  final Logger _logger = Logger('FaceRegistrationScreenState');
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
 
   Future<void> _initializeCamera() async {
     try {
@@ -27,12 +34,19 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
         await _cameraController!.initialize();
         setState(() {});
       } else {
+<<<<<<< HEAD
         _logger.warning("No cameras found"); //experimental
         // print("No cameras found");
       }
     } catch (e) {
       _logger.severe("Camera initialization failed: $e"); //experimental
       // print("Camera initialization failed: $e");
+=======
+        _logger.warning("No cameras found");
+      }
+    } catch (e) {
+      _logger.severe("Camera initialization failed: $e");
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
     }
   }
 
@@ -49,7 +63,7 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
         imageCount++;
         await Future.delayed(Duration(milliseconds: 500));
       } catch (e) {
-        print("Error capturing image: $e");
+        _logger.severe("Error capturing image: $e");
       }
     }
 
@@ -72,6 +86,7 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
       var response = await request.send();
 
       if (response.statusCode == 200) {
+<<<<<<< HEAD
         // print("Image uploaded successfully");
         _logger.info("Image uploaded successfully");
       } else {
@@ -80,6 +95,13 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
       }
     } catch (e) {
       // print("Error sending image to backend: $e");
+=======
+        _logger.info("Image uploaded successfully");
+      } else {
+        _logger.warning("Failed to upload image: ${response.statusCode}");
+      }
+    } catch (e) {
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
       _logger.severe("Error sending image to backend: $e");
     }
   }

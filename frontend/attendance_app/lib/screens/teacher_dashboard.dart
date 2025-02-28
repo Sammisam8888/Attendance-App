@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
+import 'package:logging/logging.dart';
 
 class TeacherDashboard extends StatefulWidget {
+  const TeacherDashboard({super.key}); // Convert 'key' to a super parameter
+
   @override
   TeacherDashboardState createState() => TeacherDashboardState();
 }
@@ -49,7 +52,10 @@ class TeacherDashboardState extends State<TeacherDashboard> {
           });
         }
       } catch (e) {
+<<<<<<< HEAD
         // print('Error fetching attendance: $e');
+=======
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
         _logger.severe('Error fetching attendance: $e');
       }
     });

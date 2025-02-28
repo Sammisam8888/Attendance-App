@@ -17,7 +17,10 @@ class LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   String _role = 'Student'; // Default role
   bool _isLoading = false; // Loading indicator
+<<<<<<< HEAD
   bool _passwordVisible = false; // Password visibility toggle
+=======
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
 
   Future<void> _login() async {
     setState(() {
@@ -50,6 +53,7 @@ class LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(result["message"] ?? "Login Successful ✅")),
       );
 
+<<<<<<< HEAD
             _isLoading = false;
     }
 
@@ -60,6 +64,8 @@ class LoginScreenState extends State<LoginScreen> {
         SnackBar(content: Text(result["message"] ?? "Login Successful ✅")),
       );
 
+=======
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
       if (mounted) {
         if (_role == 'Teacher') {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TeacherDashboard()));
@@ -67,6 +73,7 @@ class LoginScreenState extends State<LoginScreen> {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentDashboard()));
         }
       }
+<<<<<<< HEAD
     }
 
   void _showRoleSelection() {
@@ -92,12 +99,20 @@ class LoginScreenState extends State<LoginScreen> {
         );
       },
     );
+=======
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result["message"] ?? "Login Failed ❌")),
+      );
+    }
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
+<<<<<<< HEAD
       body: SingleChildScrollView(
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // Dismiss keyboard on scroll
         child: Padding(
@@ -143,8 +158,53 @@ class LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 20), // Add some space at the bottom
             ],
           ),
+=======
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: _emailController,
+              decoration: InputDecoration(labelText: 'Email'),
+            ),
+            TextField(
+              controller: _passwordController,
+              decoration: InputDecoration(labelText: 'Password'),
+              obscureText: true,
+            ),
+            DropdownButton<String>(
+              value: _role,
+              onChanged: (String? newValue) {
+                setState(() {
+                  _role = newValue!;
+                });
+              },
+              items: ['Teacher', 'Student'].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 20),
+            _isLoading
+                ? CircularProgressIndicator()
+                : ElevatedButton(onPressed: _login, child: Text('Login')),
+            TextButton(
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+              },
+              child: Text('New user? Register here'),
+            ),
+          ],
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
         ),
       ),
     );
   }
+<<<<<<< HEAD
 };
+=======
+}
+>>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
