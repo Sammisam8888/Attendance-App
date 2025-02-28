@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'StudentDashboard.dart';
+import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
 
 class FaceRegistration extends StatefulWidget {

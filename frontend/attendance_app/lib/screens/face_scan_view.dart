@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'SuccessScreen.dart'; // Import the success screen
+import 'success_view.dart'; // Import the success screen
 
 class FaceScanScreen extends StatefulWidget {
   final String qrCode; // The validated QR code

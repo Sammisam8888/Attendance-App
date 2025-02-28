@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'LoginScreen.dart';
+import 'login_view.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'TeacherDashboard.dart';
-import 'StudentDashboard.dart';
-import 'RegisterScreen.dart';
+import 'teacher_dashboard.dart';
+import 'student_dashboard.dart';
+import 'register_view.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
