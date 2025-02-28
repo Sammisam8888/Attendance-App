@@ -37,7 +37,7 @@ dependencies:
   camera: ^0.11.1  # Add camera package for face scanning
   image_picker: ^1.1.2  # Add image picker package for face scanning
   qr_code_scanner_plus: ^2.0.10+1  # Add QR code scanner package
-
+  logging: ^1.0.0
   
 
 

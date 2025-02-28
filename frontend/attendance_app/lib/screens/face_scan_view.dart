@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'success_view.dart'; // Import the success screen
+import 'teacher_dashboard.dart';
+import 'student_dashboard.dart';
 
 class FaceScanScreen extends StatefulWidget {
   const FaceScanScreen({super.key, required this.qrCode}); // Convert 'key' to a super parameter
 
   final String qrCode; // The validated QR code
-<<<<<<< HEAD
-=======
-
->>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
   @override
   FaceScanScreenState createState() => FaceScanScreenState();
 }
@@ -33,10 +31,6 @@ class FaceScanScreenState extends State<FaceScanScreen> {
     );
 
     if (!mounted) return; // Add this check before using BuildContext
-<<<<<<< HEAD
-
-    if (response.statusCode == 200) {
-=======
 
     setState(() {
       isLoading = false;
@@ -55,26 +49,21 @@ class FaceScanScreenState extends State<FaceScanScreen> {
         );
       }
     } else {
->>>>>>> 697e1adc92334cfc53c04454617885398f909b3a
+      final result = jsonDecode(response.body);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result["message"] ?? "Login Successful ✅")),
+        SnackBar(content: Text(result["message"] ?? "Login Failed ❌")),
       );
 
-
       if (mounted) {
-        if (_role == 'Teacher') {
+        if (result["role"] == 'Teacher') {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TeacherDashboard()));
         } else {
           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentDashboard()));
         }
       }
-      }
-     else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result["message"] ?? "Login Failed ❌")),
-      );
     }
   }
+
   @override
   void initState() {
     super.initState();
