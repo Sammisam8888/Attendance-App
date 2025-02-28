@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
+import 'package:logging/logging.dart';
 
 class FaceRegistration extends StatefulWidget {
+  const FaceRegistration({super.key});
+
   @override
   FaceRegistrationScreenState createState() => FaceRegistrationScreenState();
 }
@@ -27,12 +30,10 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
         await _cameraController!.initialize();
         setState(() {});
       } else {
-        _logger.warning("No cameras found"); //experimental
-        // print("No cameras found");
+        _logger.warning("No cameras found");
       }
     } catch (e) {
-      _logger.severe("Camera initialization failed: $e"); //experimental
-      // print("Camera initialization failed: $e");
+      _logger.severe("Camera initialization failed: $e");
     }
   }
 
@@ -49,7 +50,7 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
         imageCount++;
         await Future.delayed(Duration(milliseconds: 500));
       } catch (e) {
-        print("Error capturing image: $e");
+        _logger.severe("Error capturing image: $e");
       }
     }
 

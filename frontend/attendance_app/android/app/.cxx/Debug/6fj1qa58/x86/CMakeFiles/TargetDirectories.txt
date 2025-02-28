@@ -1,0 +1,2 @@
+/home/sammisam8888/Desktop/Attendance-App/frontend/attendance_app/android/app/.cxx/Debug/6fj1qa58/x86/CMakeFiles/edit_cache.dir
+/home/sammisam8888/Desktop/Attendance-App/frontend/attendance_app/android/app/.cxx/Debug/6fj1qa58/x86/CMakeFiles/rebuild_cache.dir

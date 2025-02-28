@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'face_scan_view.dart'; // Import the face recognition screen
 
 class StudentDashboard extends StatefulWidget {
+  const StudentDashboard({super.key}); // Convert 'key' to a super parameter
+
   @override
   StudentDashboardState createState() => StudentDashboardState();
 }
@@ -23,15 +25,19 @@ class StudentDashboardState extends State<StudentDashboard> {
 
       // Validate QR Code with backend
       bool isValid = await _sendQRToBackend(scanData.code ?? "");
-      
+
+      if (!mounted) return; // Add this check before using BuildContext
+
       if (isValid) {
         // Navigate to FaceScanScreen for face recognition
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => FaceScanScreen(qrCode: scanData.code ?? ""),
-          ),
-        );
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FaceScanScreen(qrCode: scanData.code ?? ""),
+            ),
+          );
+        }
       }
     });
   }
@@ -47,24 +53,26 @@ class StudentDashboardState extends State<StudentDashboard> {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"qr_code": qrCode}),
     );
-      // Validate QR Code with backend
-      bool isValid = await _sendQRToBackend(scanData.code ?? "");
 
-      if (!mounted) return; // Add this check before using BuildContext
-
-      if (isValid) {
-        // Navigate to FaceScanScreen for face recognition
-        if (mounted) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FaceScanScreen(qrCode: scanData.code ?? ""),
-            ),
-          );
-        }
-      }
+    if (response.statusCode == 200) {
+      final result = jsonDecode(response.body);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result['message'] ?? 'QR Verified')),
+      );
+      return true; // QR is valid, proceed to face scan
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('QR Verification Failed ❌')),
+      );
+      return false; // QR verification failed
     }
-  
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

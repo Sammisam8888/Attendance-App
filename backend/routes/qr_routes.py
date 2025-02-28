@@ -5,11 +5,12 @@ import time
 
 qr_routes = Blueprint('qr_routes', __name__)
 
-@qr_routes.route('/get_qr', methods=['GET'])
+# Generate QR Code in teacher interface
+@qr_routes.route('/teacher/get_qr', methods=['GET'])
 def get_qr():
     return send_file(generate_qr(), mimetype='image/png')
 
-@qr_routes.route('/verify_qr', methods=['POST'])
+@qr_routes.route('/student/verify_qr', methods=['POST'])
 def verify_qr():
     data = request.json
     scanned_token = data.get('token')
@@ -27,3 +28,4 @@ def verify_qr():
                 "timestamp": timestamp
             }), 200
     return jsonify({"message": "Invalid or Expired QR Code", "status": "failed"}), 400
+
