@@ -16,7 +16,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   final _passwordController = TextEditingController();
 
   Future<void> _register() async {
-    final url = Uri.parse('http://your-backend-url/student/signup'); // Update with your backend URL
+    final url = Uri.parse('http://127.0.0.1:5000/student/signup'); // Update with your backend URL
 
     final response = await http.post(
       url,

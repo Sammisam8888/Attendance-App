@@ -9,8 +9,8 @@ import os
 print("OpenCV version:", cv2.__version__)
 
 # Define file paths
-shape_predictor_path = "models/shape_predictor_68_face_landmarks.dat"
-face_recognition_model_path = "models/dlib_face_recognition_resnet_model_v1.dat"
+shape_predictor_path = "/home/sammisam8888/Desktop/Attendance-App/backend/utils/models/shape_predictor_68_face_landmarks.dat"
+face_recognition_model_path = "/home/sammisam8888/Desktop/Attendance-App/backend/utils/models/dlib_face_recognition_resnet_model_v1.dat"
 
 # Print the current working directory
 print("Current working directory:", os.getcwd())

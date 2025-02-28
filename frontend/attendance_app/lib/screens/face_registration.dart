@@ -64,8 +64,7 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
   }
 
   Future<void> _sendImageToBackend(XFile image) async {
-    final url = Uri.parse('http://your-backend-url/student/upload_face'); 
-    //Trish  Update backend URL
+    final url = Uri.parse('http://127.0.0.1:5000/student/upload_face'); // Update backend URL
 
     try {
       var request = http.MultipartRequest('POST', url);

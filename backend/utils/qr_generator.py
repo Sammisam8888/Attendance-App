@@ -6,7 +6,7 @@ from flask import Blueprint, send_file, request, jsonify
 import hashlib
 
 def generate_token():
-    timestamp = int(time.time() // 45)  # Change every 45 seconds
+    timestamp = int(time.time() // 10)  # Change every 45 seconds
     secret_key = "secure_secret"
     unique_token = f"{secret_key}_{timestamp}"
     return hashlib.sha256(unique_token.encode()).hexdigest()
