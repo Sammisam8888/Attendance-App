@@ -1,5 +1,0 @@
-name: attendance_app
-dependencies:
-  flutter:
-    sdk: flutter
-  logging: ^1.0.0
