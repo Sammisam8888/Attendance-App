@@ -1,48 +1,29 @@
+from flask import Flask, send_file, jsonify, Blueprint, request
+from utils.qr_generator import generate_qr, generate_token
+from models.user_model import Student
 import time
-from flask import Blueprint, request, jsonify
 
 qr_routes = Blueprint('qr_routes', __name__)
 
-@qr_routes.route('/scan_qr', methods=['POST'])
-def scan_qr():
-    """
-    Expected JSON payload from the student’s app:
-    {
-        "qr_data": "attendance_code_1684367890",
-        "student_id": "student123"
-    }
-    """
-    data = request.get_json()
+@qr_routes.route('/get_qr', methods=['GET'])
+def get_qr():
+    return send_file(generate_qr(), mimetype='image/png')
 
-    # Retrieve QR code data and student information
-    qr_data = data.get("qr_data")
-    student_id = data.get("student_id")
-
-    if not qr_data or not student_id:
-        return jsonify({"msg": "Missing data"}), 400
-
-    # Attempt to extract the timestamp from the QR code data
-    try:
-        prefix, qr_timestamp = qr_data.split("_code_")
-        qr_timestamp = int(qr_timestamp)
-    except Exception as e:
-        return jsonify({"msg": "Invalid QR code data", "error": str(e)}), 400
-
-    # Capture the time when the QR code was scanned (server-side)
-    scanned_timestamp = int(time.time())
-
-    # Optionally, you can compare qr_timestamp and scanned_timestamp to ensure validity
-    # For example, reject if the difference is too large (indicating an expired QR code)
-    allowed_delay = 10  # seconds
-    if abs(scanned_timestamp - qr_timestamp) > allowed_delay:
-        return jsonify({"msg": "QR code expired or invalid", 
-                        "qr_timestamp": qr_timestamp, 
-                        "scanned_timestamp": scanned_timestamp}), 400
-
-    # Here you could mark attendance in the database for the given student
-
-    return jsonify({
-        "msg": "QR code scanned successfully",
-        "qr_timestamp": qr_timestamp,
-        "scanned_timestamp": scanned_timestamp
-    }), 200
+@qr_routes.route('/verify_qr', methods=['POST'])
+def verify_qr():
+    data = request.json
+    scanned_token = data.get('token')
+    email = data.get('email')
+    
+    if scanned_token == generate_token():
+        student = Student.find_by_email(email)
+        if student:
+            timestamp = int(time.time())
+            return jsonify({
+                "message": "Valid QR Code",
+                "status": "success",
+                "name": student["name"],
+                "roll_no": student["roll_no"],
+                "timestamp": timestamp
+            }), 200
+    return jsonify({"message": "Invalid or Expired QR Code", "status": "failed"}), 400
