@@ -3,17 +3,21 @@ from utils.face_scanner import train_user, recognize_user
 
 face_scanner_routes = Blueprint('face_scanner_routes', __name__)
 
-# The face scanner routes will be within the student interface
+# Train a student face
 @face_scanner_routes.route('/student/train', methods=['POST'])
 def train():
     data = request.json
     name = data.get("name")
-    if not name:
-        return jsonify({"message": "Name is required"}), 400
-    train_user(name)
-    return jsonify({"message": f"User {name} trained successfully"}), 200
+    roll_no = data.get("roll_no")
 
+    if not name or not roll_no:
+        return jsonify({"message": "Name and Roll Number are required"}), 400
+
+    response, status = train_user(name, roll_no)
+    return jsonify(response), status
+
+# Recognize a student face
 @face_scanner_routes.route('/student/recognize', methods=['GET'])
 def recognize():
-    recognize_user()
-    return jsonify({"message": "Recognition process completed"}), 200
+    response, status = recognize_user()
+    return jsonify(response), status
