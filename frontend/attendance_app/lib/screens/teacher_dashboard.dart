@@ -12,7 +12,7 @@ class TeacherDashboard extends StatefulWidget {
 }
 
 class TeacherDashboardState extends State<TeacherDashboard> {
-  String qrImageUrl = 'http://your-backend-url/generate_qr'; // Update with your backend URL
+  String qrImageUrl = 'http://127.0.0.1:5000/generate_qr'; // Update with your backend URL
   List<Map<String, String>> studentList = [];
   Timer? _qrTimer;
   Timer? _attendanceTimer;
@@ -29,7 +29,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   void _startQrRefresh() {
     _qrTimer = Timer.periodic(Duration(seconds: 1), (timer) {
       setState(() {
-        qrImageUrl = 'http://your-backend-url/generate_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
+        qrImageUrl = 'http://127.0.0.1:5000/generate_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
       });
     });
   }
@@ -37,7 +37,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   // Fetch updated attendance list every 3 seconds
   void _startAttendanceFetch() {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('http://your-backend-url/get_attendance'); // Update with your backend URL
+      final url = Uri.parse('http://127.0.0.1:5000/get_attendance'); // Update with your backend URL
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {

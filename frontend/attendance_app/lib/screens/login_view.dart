@@ -24,8 +24,8 @@ class LoginScreenState extends State<LoginScreen> {
     });
 
     final String loginEndpoint = _role == 'Teacher'
-        ? 'http://your-backend-url/teacher/login'  // Backend endpoint for teachers
-        : 'http://your-backend-url/student/login'; // Backend endpoint for students
+        ? 'http://127.0.0.1:5000/teacher/login'  // Backend endpoint for teachers
+        : 'http://127.0.0.1:5000/student/login'; // Backend endpoint for students
 
     final response = await http.post(
       Uri.parse(loginEndpoint),

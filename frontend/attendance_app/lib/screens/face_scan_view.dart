@@ -21,8 +21,7 @@ class FaceScanScreenState extends State<FaceScanScreen> {
       isLoading = true;
     });
 
-    final url = Uri.parse('http://your-backend-url/verify_face');
-    // Trish update the backend URL for face verification
+    final url = Uri.parse('http://127.0.0.1:5000/verify_face'); // Update the backend URL for face verification
 
     final response = await http.post(
       url,

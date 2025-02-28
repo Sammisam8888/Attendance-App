@@ -3,6 +3,17 @@ auth_routes = Blueprint('auth_routes', __name__)
 from models.user_model import Student, Teacher
 from database import db
 
+def add_sample_data():
+    if not Teacher.find_by_email("sam@gmail.com"):
+        sample_teacher = Teacher(name="Sam", email="sam@gmail.com", password="sammisam", teacher_id="T1001")
+        sample_teacher.save_to_db()
+    
+    if not Student.find_by_email("sammi@gmail.com"):
+        sample_student = Student(name="Sammi", email="sammi@gmail.com", password="player", roll_no="S1001")
+        sample_student.save_to_db()
+
+add_sample_data()
+
 @auth_routes.route('/student/signup', methods=['POST'])
 def student_signup():
     data = request.json
