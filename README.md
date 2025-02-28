@@ -41,7 +41,7 @@ Attendance-app/
 │   ├── config.py                # Configuration settings (MongoDB, Heroku settings)
 │   ├── requirements.txt         # Python dependencies
 │   ├── routes/                  # API endpoints
-│   │   ├── auth_routes.py       # Login/signup, fingerprint verification
+│   │   ├── auth_routes.py       # Login/signup, face verification
 │   │   ├── qr_routes.py         # QR generation & validation
 │   │   ├── attendance_routes.py # Attendance marking logic
 │   ├── models/                  # Database models
@@ -49,7 +49,7 @@ Attendance-app/
 │   │   ├── attendance_model.py  # Attendance model
 │   ├── utils/                   # Helper functions
 │   │   ├── qr_generator.py      # QR code generation logic
-│   │   ├── fingerprint_match.py # Fingerprint matching logic
+│   │   ├── face_match.py        # Face matching logic
 │   │   ├── token_validator.py   # Token/session validation
 │   ├── templates/               # HTML files for testing API (optional)
 │   ├── static/                  # Static files (if needed)
@@ -61,17 +61,17 @@ Attendance-app/
 │   ├── lib/
 │   │   ├── main.dart             # Entry point of the app
 │   │   ├── screens/              # UI Screens
-│   │   │   ├── login_screen.dart         # Login with fingerprint auth
-│   │   │   ├── fingerprint_scan.dart     # Fingerprint scanning
+│   │   │   ├── login_screen.dart         # Login with face auth
+│   │   │   ├── face_scan.dart            # Face scanning
 │   │   │   ├── teacher_dashboard.dart    # Teacher dashboard
 │   │   │   ├── student_scanner.dart      # QR scanner for students
 │   │   │   ├── attendance_list.dart      # Attendance records
 │   │   ├── widgets/              # Reusable UI components
 │   │   │   ├── qr_scanner.dart    # QR scanning logic
 │   │   │   ├── attendance_card.dart # Attendance display
-│   │   │   ├── fingerprint_widget.dart # Fingerprint UI component
+│   │   │   ├── face_widget.dart    # Face UI component
 │   │   ├── services/             # API Calls
-│   │   │   ├── auth_service.dart  # Handles login & fingerprint auth
+│   │   │   ├── auth_service.dart  # Handles login & face auth
 │   │   │   ├── qr_service.dart    # Handles QR generation & scanning
 │   │   │   ├── attendance_service.dart # Attendance submission
 │   │   ├── utils/                # Helper functions
@@ -82,6 +82,9 @@ Attendance-app/
 │   ├── pubspec.yaml              # Flutter dependencies
 │   ├── android/                  # Android-specific files
 │   ├── ios/                      # iOS-specific files
+│   ├── web/                      # Web-specific files
+│   ├── build/                    # Build outputs
+│   ├── test/                     # Unit tests for frontend
 │
 │── .gitignore                    # Ignore unnecessary files
 │── README.md                      # Project documentation
@@ -93,13 +96,13 @@ Attendance-app/
 │   ├── github-actions.yml         # GitHub Actions for CI/CD
 ```
 
-## Fingerprint Scanner Integration
+## Face Scanner Integration
 
-We plan to integrate a fingerprint scanner to verify students' identities. The raw fingerprint data will be stored and matched using the [fingerprint_match.py](http://_vscodecontentref_/2) utility. The process involves:
+We plan to integrate a face scanner to verify students' identities. The raw face data will be stored and matched using the [face_match.py](https://github.com/Sammisam8888/face-scanner.git) utility. The process involves:
 
-1. Capturing the fingerprint data from the scanner.
-2. Storing the fingerprint data securely in the database.
-3. Using the [fingerprint_match.py](http://_vscodecontentref_/3) utility to match the scanned fingerprint with the stored data during attendance verification.
+1. Capturing the face data from the scanner.
+2. Storing the face data securely in the database.
+3. Using the [face_match.py](https://github.com/Sammisam8888/face-scanner.git) utility to match the scanned face with the stored data during attendance verification.
 
 ## Real-Time QR Code Generator
 
@@ -115,8 +118,8 @@ We will implement a real-time QR code generator to conduct attendance. The QR co
 
 In addition to QR code scanning, we will use biometric verification to ensure the authenticity of the students. The process involves:
 
-1. Capturing the student's fingerprint during the QR code scan.
-2. Matching the fingerprint with the stored data using the [fingerprint_match.py](http://_vscodecontentref_/5) utility.
+1. Capturing the student's face during the QR code scan.
+2. Matching the face with the stored data using the https://github.com/Sammisam8888/face-scanner.git utility.
 3. Verifying the student's identity and updating the attendance record.
 
 ## Contributing

@@ -10,6 +10,21 @@ def student_signup():
     return jsonify(student.save_to_db())
 
 @auth_routes.route('/student/login', methods=['POST'])
+def login():
+    student = Student()
+    response = student.login()
+    return response
+
+@auth_routes.route('/teacher/signup', methods=['POST'])
+def teacher_signup():
+    return 
+
+
+@auth_routes.route('/teacher/login', methods=['POST'])
+def teacher_login():
+    return
+
+  
 def student_login():
     data = request.json
     student = Student.find_by_email(data["email"])

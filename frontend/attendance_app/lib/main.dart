@@ -1,44 +1,28 @@
 import 'package:flutter/material.dart';
-import 'screens/login_screen.dart';
+import 'screens/LoginScreen.dart';
+import 'screens/RegisterScreen.dart';
+import 'screens/TeacherDashboard.dart';
+import 'screens/StudentDashboard.dart';
+import 'screens/FaceRegistration.dart';
 
 void main() {
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Fingerprint Authentication',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: LoginScreen(), // Start with the login screen
-    );
-  }
-}
-
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: Center(
-        child: IconButton(
-          key: Key('fingerprintButton'), // Add this key
-          icon: Icon(Icons.fingerprint),
-          onPressed: () {
-            // Trigger fingerprint authentication
-          },
-        ),
-      ),
+      title: 'Attendance App',
+      initialRoute: '/',
+      routes: {
+        '/': (context) => LoginScreen(),
+        '/register': (context) => RegisterScreen(),
+        '/teacher_dashboard': (context) => TeacherDashboard(),
+        '/student_dashboard': (context) => StudentDashboard(),
+        '/face_registration': (context) => FaceRegistration(),
+      },
     );
   }
 }
