@@ -15,6 +15,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordController = TextEditingController();
   String _role = 'Student'; // Default role
   bool _isLoading = false; // Loading indicator
+  bool _passwordVisible = false; // Password visibility toggle
 
   Future<void> _login() async {
     setState(() {
@@ -57,49 +58,80 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  void _showRoleSelection() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Role'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: ['Teacher', 'Student'].map((String choice) {
+              return ListTile(
+                title: Text(choice),
+                onTap: () {
+                  setState(() {
+                    _role = choice;
+                  });
+                  Navigator.pop(context);
+                },
+              );
+            }).toList(),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Login')),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
-              obscureText: true,
-            ),
-            DropdownButton<String>(
-              value: _role,
-              onChanged: (String? newValue) {
-                setState(() {
-                  _role = newValue!;
-                });
-              },
-              items: ['Teacher', 'Student'].map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-            ),
-            SizedBox(height: 20),
-            _isLoading
-                ? CircularProgressIndicator()
-                : ElevatedButton(onPressed: _login, child: Text('Login')),
-            TextButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
-              },
-              child: Text('New user? Register here'),
-            ),
-          ],
+      body: SingleChildScrollView(
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // Dismiss keyboard on scroll
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(height: 50), // Add some space at the top
+              TextField(
+                controller: _emailController,
+                decoration: InputDecoration(labelText: 'Email'),
+              ),
+              TextField(
+                controller: _passwordController,
+                obscureText: !_passwordVisible,
+                decoration: InputDecoration(
+                  labelText: 'Password',
+                  suffixIcon: IconButton(
+                    icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off),
+                    onPressed: () {
+                      setState(() {
+                        _passwordVisible = !_passwordVisible;
+                      });
+                    },
+                  ),
+                ),
+              ),
+              ListTile(
+                title: Text('Role: $_role'),
+                trailing: Icon(Icons.arrow_drop_down),
+                onTap: _showRoleSelection,
+              ),
+              SizedBox(height: 20),
+              _isLoading
+                  ? CircularProgressIndicator()
+                  : ElevatedButton(onPressed: _login, child: Text('Login')),
+              TextButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => RegisterScreen()));
+                },
+                child: Text('New user? Register here'),
+              ),
+              SizedBox(height: 20), // Add some space at the bottom
+            ],
+          ),
         ),
       ),
     );
