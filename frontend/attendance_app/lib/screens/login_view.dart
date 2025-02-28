@@ -6,11 +6,13 @@ import 'student_dashboard.dart';
 import 'register_view.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key}); // Convert 'key' to a super parameter
+
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   String _role = 'Student'; // Default role
@@ -41,22 +43,31 @@ class _LoginScreenState extends State<LoginScreen> {
       _isLoading = false;
     });
 
+    if (!mounted) return; // Add this check before using BuildContext
+
     if (response.statusCode == 200) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result["message"] ?? "Login Successful ✅")),
       );
 
-      if (_role == 'Teacher') {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TeacherDashboard()));
-      } else {
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentDashboard()));
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result["message"] ?? "Login Failed ❌")),
-      );
+            _isLoading = false;
     }
-  }
+
+    if (!mounted) return; // Add this check before using BuildContext
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(result["message"] ?? "Login Successful ✅")),
+      );
+
+      if (mounted) {
+        if (_role == 'Teacher') {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TeacherDashboard()));
+        } else {
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentDashboard()));
+        }
+      }
+    }
 
   void _showRoleSelection() {
     showDialog(
@@ -136,4 +147,4 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
-}
+};

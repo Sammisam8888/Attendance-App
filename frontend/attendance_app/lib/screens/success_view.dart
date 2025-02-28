@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class SuccessScreen extends StatelessWidget {
   final String subject; // Subject for which attendance is registered
 
-  SuccessScreen({required this.subject});
+const SuccessScreen({super.key, required this.subject}); // Convert 'key' to a super parameter
 
   @override
   Widget build(BuildContext context) {

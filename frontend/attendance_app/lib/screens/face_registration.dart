@@ -5,13 +5,16 @@ import 'package:http/http.dart' as http;
 
 class FaceRegistration extends StatefulWidget {
   @override
-  _FaceRegistrationScreenState createState() => _FaceRegistrationScreenState();
+  FaceRegistrationScreenState createState() => FaceRegistrationScreenState();
 }
 
-class _FaceRegistrationScreenState extends State<FaceRegistration> {
+class FaceRegistrationScreenState extends State<FaceRegistration> {
   CameraController? _cameraController;
   bool isCapturing = false;
   int imageCount = 0;
+  
+  final Logger _logger = Logger('FaceRegistrationScreenState'); // not required logger file - experimental
+
 
   Future<void> _initializeCamera() async {
     try {
@@ -24,10 +27,12 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
         await _cameraController!.initialize();
         setState(() {});
       } else {
-        print("No cameras found");
+        _logger.warning("No cameras found"); //experimental
+        // print("No cameras found");
       }
     } catch (e) {
-      print("Camera initialization failed: $e");
+      _logger.severe("Camera initialization failed: $e"); //experimental
+      // print("Camera initialization failed: $e");
     }
   }
 
@@ -49,10 +54,12 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
     }
 
     isCapturing = false;
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => StudentDashboard()),
-    );
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => StudentDashboard()),
+      );
+    }
   }
 
   Future<void> _sendImageToBackend(XFile image) async {
@@ -65,12 +72,15 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        print("Image uploaded successfully");
+        // print("Image uploaded successfully");
+        _logger.info("Image uploaded successfully");
       } else {
-        print("Failed to upload image: ${response.statusCode}");
+        // print("Failed to upload image: ${response.statusCode}");
+        _logger.warning("Failed to upload image: ${response.statusCode}");
       }
     } catch (e) {
-      print("Error sending image to backend: $e");
+      // print("Error sending image to backend: $e");
+      _logger.severe("Error sending image to backend: $e");
     }
   }
 

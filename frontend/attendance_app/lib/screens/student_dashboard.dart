@@ -6,10 +6,10 @@ import 'face_scan_view.dart'; // Import the face recognition screen
 
 class StudentDashboard extends StatefulWidget {
   @override
-  _StudentDashboardState createState() => _StudentDashboardState();
+  StudentDashboardState createState() => StudentDashboardState();
 }
 
-class _StudentDashboardState extends State<StudentDashboard> {
+class StudentDashboardState extends State<StudentDashboard> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   String scannedData = "Scan a QR Code";
@@ -47,26 +47,24 @@ class _StudentDashboardState extends State<StudentDashboard> {
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({"qr_code": qrCode}),
     );
+      // Validate QR Code with backend
+      bool isValid = await _sendQRToBackend(scanData.code ?? "");
 
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result['message'] ?? 'QR Verified')),
-      );
-      return true; // QR is valid, proceed to face scan
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('QR Verification Failed ❌')),
-      );
-      return false; // QR verification failed
+      if (!mounted) return; // Add this check before using BuildContext
+
+      if (isValid) {
+        // Navigate to FaceScanScreen for face recognition
+        if (mounted) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => FaceScanScreen(qrCode: scanData.code ?? ""),
+            ),
+          );
+        }
+      }
     }
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
+  
 
   @override
   Widget build(BuildContext context) {

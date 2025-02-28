@@ -5,10 +5,10 @@ import 'login_view.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  RegisterScreenState createState() => RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+class RegisterScreenState extends State<RegisterScreen> {
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -42,20 +42,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
 
     final result = jsonDecode(response.body);
+
     if (response.statusCode == 201) {
+      if (!mounted) return; 
+      // Add this check before using BuildContext
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result["message"] ?? "Registration Successful ✅")),
       );
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
+
+      if (mounted) {
+        Navigator.pop(context); // Navigate back to login after successful registration
+      }
+
     } else {
+      if (!mounted) return; // Add this check before using BuildContext
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result["message"] ?? "Registration Failed ❌")),
       );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {

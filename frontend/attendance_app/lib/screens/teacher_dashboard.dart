@@ -5,14 +5,15 @@ import 'dart:convert';
 
 class TeacherDashboard extends StatefulWidget {
   @override
-  _TeacherDashboardState createState() => _TeacherDashboardState();
+  TeacherDashboardState createState() => TeacherDashboardState();
 }
 
-class _TeacherDashboardState extends State<TeacherDashboard> {
+class TeacherDashboardState extends State<TeacherDashboard> {
   String qrImageUrl = 'http://your-backend-url/generate_qr'; // Update with your backend URL
   List<Map<String, String>> studentList = [];
   Timer? _qrTimer;
   Timer? _attendanceTimer;
+  final Logger _logger = Logger('TeacherDashboardState');
 
   @override
   void initState() {
@@ -48,7 +49,8 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
           });
         }
       } catch (e) {
-        print('Error fetching attendance: $e');
+        // print('Error fetching attendance: $e');
+        _logger.severe('Error fetching attendance: $e');
       }
     });
   }
