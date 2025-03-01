@@ -10,14 +10,14 @@ def add_sample_data():
     
     if not Student.find_by_email("sammi@gmail.com"):
         sample_student = Student(name="Sammi", email="sammi@gmail.com", password="player", roll_no="S1001")
-        sample_student.save_to_db()
+        sample_student.save_to_db()                
 
 add_sample_data()
 
 @auth_routes.route('/student/signup', methods=['POST'])
 def student_signup():
     data = request.json
-    student = Student(name=data["name"], email=data["email"], password=data["password"], roll_no=data["roll_no"])
+    student = Student(name=data["name"], email=data["email"], password=data["password"], roll_no=data["roll_number"])
     return jsonify(student.save_to_db())
 
 @auth_routes.route('/student/login', methods=['POST'])

@@ -6,7 +6,7 @@ from routes.attendance_routes import attendance_routes
 
 app = Flask(__name__)
 
-# Register blueprints
+# Register blueprints with updated URL prefixes
 app.register_blueprint(auth_routes, url_prefix='/auth')
 app.register_blueprint(qr_routes, url_prefix='/qr')
 app.register_blueprint(face_scanner_routes, url_prefix='/face_scanner')

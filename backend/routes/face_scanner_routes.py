@@ -19,5 +19,7 @@ def train():
 # Recognize a student face
 @face_scanner_routes.route('/student/recognize', methods=['GET'])
 def recognize():
+    
     response, status = recognize_user()
     return jsonify(response), status
+

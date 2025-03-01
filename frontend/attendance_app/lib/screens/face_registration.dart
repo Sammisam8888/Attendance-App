@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
-import 'package:logging/logging.dart';
 
 class FaceRegistration extends StatefulWidget {
   const FaceRegistration({super.key});
 
   @override
-  FaceRegistrationScreenState createState() => FaceRegistrationScreenState();
+  _FaceRegistrationScreenState createState() => _FaceRegistrationScreenState();
 }
 
-class FaceRegistrationScreenState extends State<FaceRegistration> {
+class _FaceRegistrationScreenState extends State<FaceRegistration> {
   CameraController? _cameraController;
   bool isCapturing = false;
   int imageCount = 0;
-  
-  final Logger _logger = Logger('FaceRegistrationScreenState'); // not required logger file - experimental
-
+  late List<CameraDescription> cameras;
+  bool _isCameraPermissionGranted = false;
 
   Future<void> _initializeCamera() async {
     try {
-      final cameras = await availableCameras();
+      cameras = await availableCameras();
       if (cameras.isNotEmpty) {
         _cameraController = CameraController(
           cameras.first,
@@ -30,41 +29,59 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
         await _cameraController!.initialize();
         setState(() {});
       } else {
-        _logger.warning("No cameras found");
+        print("No cameras found");
       }
     } catch (e) {
-      _logger.severe("Camera initialization failed: $e");
+      print("Camera initialization failed: $e");
+    }
+  }
+
+  Future<void> _requestCameraPermission() async {
+    final status = await Permission.camera.request();
+    if (status.isGranted) {
+      setState(() {
+        _isCameraPermissionGranted = true;
+      });
+      _initializeCamera();
+    } else {
+      setState(() {
+        _isCameraPermissionGranted = false;
+      });
     }
   }
 
   Future<void> _captureImages() async {
     if (_cameraController == null || !_cameraController!.value.isInitialized) return;
 
-    isCapturing = true;
-    imageCount = 0;
+    setState(() {
+      isCapturing = true;
+      imageCount = 0;
+    });
 
     while (isCapturing && imageCount < 30) {
       try {
         final XFile image = await _cameraController!.takePicture();
         await _sendImageToBackend(image);
-        imageCount++;
+        setState(() {
+          imageCount++;
+        });
         await Future.delayed(Duration(milliseconds: 500));
       } catch (e) {
-        _logger.severe("Error capturing image: $e");
+        print("Error capturing image: $e");
       }
     }
 
-    isCapturing = false;
-    if (mounted) {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => StudentDashboard()),
-      );
-    }
+    setState(() {
+      isCapturing = false;
+    });
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => StudentDashboard()),
+    );
   }
 
   Future<void> _sendImageToBackend(XFile image) async {
-    final url = Uri.parse('http://127.0.0.1:5000/student/train'); // Update backend URL
+    final url = Uri.parse('http://127.0.0.1:5000/student/train'); // Update URL
 
     try {
       var request = http.MultipartRequest('POST', url);
@@ -72,22 +89,19 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        // print("Image uploaded successfully");
-        _logger.info("Image uploaded successfully");
+        print("Image uploaded successfully");
       } else {
-        // print("Failed to upload image: ${response.statusCode}");
-        _logger.warning("Failed to upload image: ${response.statusCode}");
+        print("Failed to upload image: ${response.statusCode}");
       }
     } catch (e) {
-      // print("Error sending image to backend: $e");
-      _logger.severe("Error sending image to backend: $e");
+      print("Error sending image to backend: $e");
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _initializeCamera();
+    _requestCameraPermission();
   }
 
   @override
@@ -100,21 +114,29 @@ class FaceRegistrationScreenState extends State<FaceRegistration> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Face Registration')),
-      body: Column(
-        children: [
-          Expanded(
-            child: _cameraController == null || !_cameraController!.value.isInitialized
-                ? Center(child: CircularProgressIndicator())
-                : CameraPreview(_cameraController!),
-          ),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: _captureImages,
-            child: Text('Start Face Registration'),
-          ),
-          SizedBox(height: 20),
-        ],
-      ),
+      body: _isCameraPermissionGranted
+          ? Column(
+              children: [
+                Expanded(
+                  child: _cameraController == null || !_cameraController!.value.isInitialized
+                      ? Center(child: CircularProgressIndicator())
+                      : CameraPreview(_cameraController!),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: isCapturing ? null : _captureImages,
+                  child: Text(isCapturing ? 'Capturing...' : 'Start Face Registration'),
+                ),
+                SizedBox(height: 20),
+                Text("Images Captured: $imageCount / 30"),
+              ],
+            )
+          : Center(
+              child: ElevatedButton(
+                onPressed: _requestCameraPermission,
+                child: Text('Allow Camera Permission'),
+              ),
+            ),
     );
   }
 }

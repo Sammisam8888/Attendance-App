@@ -45,7 +45,7 @@ class StudentDashboardState extends State<StudentDashboard> {
   Future<bool> _sendQRToBackend(String qrCode) async {
     if (qrCode.isEmpty) return false;
 
-    final url = Uri.parse('http://127.0.0.1:5000/validate_qr'); // Update the URL for backend QR validation
+    final url = Uri.parse('http://127.0.0.1:5000/qr/student/verify_qr'); // Update the URL for backend QR validation
 
     final response = await http.post(
       url,
