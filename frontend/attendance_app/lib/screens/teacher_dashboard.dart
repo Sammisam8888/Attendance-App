@@ -12,7 +12,7 @@ class TeacherDashboard extends StatefulWidget {
 }
 
 class TeacherDashboardState extends State<TeacherDashboard> {
-  String qrImageUrl = 'http://127.0.0.1:5000/generate_qr';
+  String qrImageUrl = 'http://127.0.0.1:5000/qr/teacher/get_qr';
   List<Map<String, String>> studentList = [];
   Timer? _qrTimer;
   Timer? _attendanceTimer;
@@ -29,7 +29,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   void _startQrRefresh() {
     _qrTimer = Timer.periodic(Duration(seconds: 10), (timer) {
       setState(() {
-        qrImageUrl = 'http://127.0.0.1:5000/generate_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
+        qrImageUrl = 'http://127.0.0.1:5000/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
       });
     });
   }
@@ -37,7 +37,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   // Fetch updated attendance list every 3 seconds
   void _startAttendanceFetch() {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('http://127.0.0.1:5000/get_attendance');
+      final url = Uri.parse('http://127.0.0.1:5000/attendance/get_all_attendance');
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {
@@ -85,20 +85,26 @@ class TeacherDashboardState extends State<TeacherDashboard> {
             ),
             SizedBox(height: 20),
             Text("Students Marked Present:", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Expanded(
-              child: studentList.isEmpty
-                  ? Center(child: Text("No students marked present yet."))
-                  : ListView.builder(
-                      itemCount: studentList.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(studentList[index]['name']!),
-                          subtitle: Text("Roll No: ${studentList[index]['roll']}"),
-                          leading: Icon(Icons.check_circle, color: Colors.green),
-                        );
-                      },
+            SizedBox(height: 10),
+            studentList.isEmpty
+                ? Center(child: Text("No students marked present yet."))
+                : Expanded(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: DataTable(
+                        columns: [
+                          DataColumn(label: Text('Roll No')),
+                          DataColumn(label: Text('Name')),
+                        ],
+                        rows: studentList.map((student) {
+                          return DataRow(cells: [
+                            DataCell(Text(student['roll']!)),
+                            DataCell(Text(student['name']!)),
+                          ]);
+                        }).toList(),
+                      ),
                     ),
-            ),
+                  ),
           ],
         ),
       ),

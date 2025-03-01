@@ -8,7 +8,8 @@ qr_routes = Blueprint('qr_routes', __name__)
 # Generate QR Code in teacher interface
 @qr_routes.route('/teacher/get_qr', methods=['GET'])
 def get_qr():
-    return send_file(generate_qr(), mimetype='image/png')
+    timestamp = request.args.get('timestamp', default=int(time.time() // 10), type=int)
+    return send_file(generate_qr(timestamp), mimetype='image/png')
 
 @qr_routes.route('/student/verify_qr', methods=['POST'])
 def verify_qr():

@@ -1,83 +1,147 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'success_view.dart'; // Import the success screen
-import 'teacher_dashboard.dart';
+import 'package:camera/camera.dart';
+import 'package:permission_handler/permission_handler.dart'; // Add this import
 import 'student_dashboard.dart';
+import 'package:http/http.dart' as http;
 
 class FaceScanScreen extends StatefulWidget {
-  const FaceScanScreen({super.key, required this.qrCode}); // Convert 'key' to a super parameter
+  const FaceScanScreen({super.key, required this.qrCode});
 
-  final String qrCode; // The validated QR code
+  final String qrCode;
   @override
   FaceScanScreenState createState() => FaceScanScreenState();
 }
 
 class FaceScanScreenState extends State<FaceScanScreen> {
-  bool isLoading = false;
+  CameraController? _cameraController;
+  bool isCapturing = false;
+  int imageCount = 0;
+  late List<CameraDescription> cameras;
+  bool _isCameraPermissionGranted = false; // Add this variable
 
-  Future<void> _verifyFace() async {
-    setState(() {
-      isLoading = true;
-    });
-
-    final url = Uri.parse('http://127.0.0.1:5000/verify_face'); // Update the backend URL for face verification
-
-    final response = await http.post(
-      url,
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode({"qr_code": widget.qrCode}), // Send QR code for verification
-    );
-
-    if (!mounted) return; // Add this check before using BuildContext
-
-    setState(() {
-      isLoading = false;
-    });
-
-    if (response.statusCode == 200) {
-      final result = jsonDecode(response.body);
-
-      // Navigate to SuccessScreen after face verification
-      if (mounted) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => SuccessScreen(subject: result['subject'] ?? "Unknown Subject"),
-          ),
+  Future<void> _initializeCamera() async {
+    try {
+      cameras = await availableCameras();
+      if (cameras.isNotEmpty) {
+        _cameraController = CameraController(
+          cameras.first,
+          ResolutionPreset.medium,
         );
+        await _cameraController!.initialize();
+        if (mounted) setState(() {});
+      } else {
+        print("No cameras found");
       }
-    } else {
-      final result = jsonDecode(response.body);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result["message"] ?? "Login Failed ❌")),
-      );
+    } catch (e) {
+      print("Camera initialization failed: $e");
+    }
+  }
 
-      if (mounted) {
-        if (result["role"] == 'Teacher') {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => TeacherDashboard()));
-        } else {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => StudentDashboard()));
+  Future<void> _requestCameraPermission() async {
+    final status = await Permission.camera.request();
+    if (status.isGranted) {
+      setState(() {
+        _isCameraPermissionGranted = true;
+      });
+      _initializeCamera();
+    } else {
+      setState(() {
+        _isCameraPermissionGranted = false;
+      });
+    }
+  }
+
+  Future<void> _captureImages() async {
+    if (_cameraController == null || !_cameraController!.value.isInitialized) return;
+
+    setState(() {
+      isCapturing = true;
+      imageCount = 0;
+    });
+
+    while (isCapturing && imageCount < 30) {
+      try {
+        final XFile image = await _cameraController!.takePicture();
+        await _sendImageToBackend(image);
+        if (mounted) {
+          setState(() {
+            imageCount++;
+          });
         }
+        await Future.delayed(Duration(milliseconds: 500));
+      } catch (e) {
+        print("Error capturing image: $e");
       }
+    }
+
+    if (mounted) {
+      setState(() {
+        isCapturing = false;
+      });
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => StudentDashboard()),
+      );
+    }
+  }
+
+  Future<void> _sendImageToBackend(XFile image) async {
+    final url = Uri.parse('http://127.0.0.1:5000/student/train'); // Update URL
+
+    try {
+      var request = http.MultipartRequest('POST', url);
+      request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      var response = await request.send();
+
+      if (response.statusCode == 200) {
+        print("Image uploaded successfully");
+      } else {
+        print("Failed to upload image: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error sending image to backend: $e");
     }
   }
 
   @override
   void initState() {
     super.initState();
-    _verifyFace(); // Automatically verify face once this screen loads
+    _requestCameraPermission(); // Request camera permission on init
+  }
+
+  @override
+  void dispose() {
+    _cameraController?.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Face Recognition')),
-      body: Center(
-        child: isLoading
-            ? CircularProgressIndicator() // Show loading animation while verifying
-            : Text("Verifying Face..."),
-      ),
+      appBar: AppBar(title: Text('Face Registration')),
+      body: _isCameraPermissionGranted
+          ? Column(
+              children: [
+                Expanded(
+                  child: _cameraController == null || !_cameraController!.value.isInitialized
+                      ? Center(child: CircularProgressIndicator())
+                      : CameraPreview(_cameraController!),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: isCapturing ? null : _captureImages,
+                  child: Text(isCapturing ? 'Capturing...' : 'Start Face Registration'),
+                ),
+                SizedBox(height: 20),
+                Text("Images Captured: $imageCount / 30"),
+              ],
+            )
+          : Center(
+              child: ElevatedButton(
+                onPressed: _requestCameraPermission,
+                child: Text('Allow Camera Permission'),
+              ),
+            ),
     );
   }
 }

@@ -5,15 +5,16 @@ import io
 from flask import Blueprint, send_file, request, jsonify
 import hashlib
 
-def generate_token():
-    timestamp = int(time.time() // 10)  # Change every 45 seconds
+def generate_token(timestamp=None):
+    if timestamp is None:
+        timestamp = int(time.time() // 10)  # Change every 10 seconds
     secret_key = "secure_secret"
     unique_token = f"{secret_key}_{timestamp}"
     return hashlib.sha256(unique_token.encode()).hexdigest()
 
 # Generate QR Code
-def generate_qr():
-    token = generate_token()
+def generate_qr(timestamp):
+    token = generate_token(timestamp)
     qr = qrcode.make(token)
     img_io = io.BytesIO()
     qr.save(img_io, 'PNG')

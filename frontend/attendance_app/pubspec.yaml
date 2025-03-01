@@ -38,6 +38,7 @@ dependencies:
   image_picker: ^1.1.2  # Add image picker package for face scanning
   qr_code_scanner_plus: ^2.0.10+1  # Add QR code scanner package
   logging: ^1.0.0
+  permission_handler: ^10.2.0  # Add permission_handler package
   
 
 

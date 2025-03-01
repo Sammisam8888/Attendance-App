@@ -10,17 +10,21 @@ def mark_attendance():
     name = data.get('name')
     roll_no = data.get('roll_no')
     timestamp = data.get('timestamp')
+    subject_name = data.get('subject_name')
+    classroom_number = data.get('classroom_number')
     
-    if not email or not name or not roll_no or not timestamp:
+    if not email or not name or not roll_no or not timestamp or not subject_name or not classroom_number:
         return jsonify({"message": "Missing data"}), 400
     
-    AttendanceModel.mark_attendance(email, name, roll_no, timestamp)
+    AttendanceModel.mark_attendance(email, name, roll_no, timestamp, subject_name, classroom_number)
     return jsonify({"message": "Attendance marked successfully"}), 200
+
 
 @attendance_routes.route('/get_all_attendance', methods=['GET'])
 def get_all_attendance():
     attendance_records = AttendanceModel.get_all_attendance()
     return jsonify(attendance_records), 200
+
 
 @attendance_routes.route('/get_attendance_by_email', methods=['GET'])
 def get_attendance_by_email():
