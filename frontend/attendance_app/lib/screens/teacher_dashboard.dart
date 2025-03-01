@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
-import 'package:logging/logging.dart';
+import 'package:logging/logging.dart'; // Correct import
 
 class TeacherDashboard extends StatefulWidget {
   const TeacherDashboard({super.key});
@@ -16,7 +16,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   List<Map<String, String>> studentList = [];
   Timer? _qrTimer;
   Timer? _attendanceTimer;
-  final Logger _logger = Logger('TeacherDashboardState');
+  final Logger _logger = Logger('TeacherDashboardState'); // Update logger initialization
 
   @override
   void initState() {
@@ -25,9 +25,9 @@ class TeacherDashboardState extends State<TeacherDashboard> {
     _startAttendanceFetch();
   }
 
-  // Refresh the QR image every 10 seconds
+  // Refresh the QR image every 3 seconds
   void _startQrRefresh() {
-    _qrTimer = Timer.periodic(Duration(seconds: 10), (timer) {
+    _qrTimer = Timer.periodic(Duration(seconds: 3), (timer) {
       setState(() {
         qrImageUrl = 'http://127.0.0.1:5000/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
       });
@@ -52,7 +52,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
           });
         }
       } catch (e) {
-        _logger.severe('Error fetching attendance: $e');
+        _logger.severe('Error fetching attendance: $e'); // Replace logger.e
       }
     });
   }

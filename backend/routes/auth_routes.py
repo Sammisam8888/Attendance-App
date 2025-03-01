@@ -25,7 +25,7 @@ def student_login():
     data = request.json
     student = Student.find_by_email(data["email"])
     
-    if student and Student.verify_password(data["password"], student["password"], student["roll_no"]):
+    if student and Student.verify_password(data["password"], student["password"]):
         return jsonify({"message": "Login successful"}), 200
     return jsonify({"message": "Invalid credentials"}), 400
 
@@ -40,6 +40,6 @@ def teacher_login():
     data = request.json
     teacher = Teacher.find_by_email(data["email"])
     
-    if teacher and Teacher.verify_password(data["password"], teacher["password"], teacher["teacher_id"]):
+    if teacher and Teacher.verify_password(data["password"], teacher["password"]):
         return jsonify({"message": "Login successful"}), 200
     return jsonify({"message": "Invalid credentials"}), 400

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'login_view.dart';
+import 'package:logging/logging.dart'; // Add this import
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key}); // Convert 'key' to a super parameter
@@ -19,6 +20,7 @@ class RegisterScreenState extends State<RegisterScreen> {
   String _role = 'Student'; // Default role
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
+  final Logger logger = Logger('RegisterScreen'); // Add this line
 
   Future<void> _register() async {
     if (_passwordController.text.trim() != _confirmPasswordController.text.trim()) {

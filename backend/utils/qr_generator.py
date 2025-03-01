@@ -7,7 +7,7 @@ import hashlib
 
 def generate_token(timestamp=None):
     if timestamp is None:
-        timestamp = int(time.time() // 10)  # Change every 10 seconds
+        timestamp = int(time.time() // 3)  # Change every 3 seconds
     secret_key = "secure_secret"
     unique_token = f"{secret_key}_{timestamp}"
     return hashlib.sha256(unique_token.encode()).hexdigest()

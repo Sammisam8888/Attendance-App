@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:logging/logging.dart'; // Correct import
 import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,6 +18,7 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
   int imageCount = 0;
   late List<CameraDescription> cameras;
   bool _isCameraPermissionGranted = false;
+  final Logger _logger = Logger('FaceRegistrationScreenState'); // Update logger initialization
 
   Future<void> _initializeCamera() async {
     try {
@@ -29,10 +31,10 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
         await _cameraController!.initialize();
         setState(() {});
       } else {
-        print("No cameras found");
+        _logger.warning("No cameras found"); // Replace logger.e
       }
     } catch (e) {
-      print("Camera initialization failed: $e");
+      _logger.severe("Camera initialization failed: $e"); // Replace logger.e
     }
   }
 
@@ -67,7 +69,7 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
         });
         await Future.delayed(Duration(milliseconds: 500));
       } catch (e) {
-        print("Error capturing image: $e");
+        _logger.severe("Error capturing image: $e"); // Replace logger.e
       }
     }
 
@@ -89,12 +91,12 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
       var response = await request.send();
 
       if (response.statusCode == 200) {
-        print("Image uploaded successfully");
+        _logger.info("Image uploaded successfully"); // Replace logger.i
       } else {
-        print("Failed to upload image: ${response.statusCode}");
+        _logger.warning("Failed to upload image: ${response.statusCode}"); // Replace logger.e
       }
     } catch (e) {
-      print("Error sending image to backend: $e");
+      _logger.severe("Error sending image to backend: $e"); // Replace logger.e
     }
   }
 
