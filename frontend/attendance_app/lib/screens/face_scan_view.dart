@@ -25,8 +25,13 @@ class FaceScanScreenState extends State<FaceScanScreen> {
     try {
       cameras = await availableCameras();
       if (cameras.isNotEmpty) {
+        // Use the front camera if available
+        final frontCamera = cameras.firstWhere(
+          (camera) => camera.lensDirection == CameraLensDirection.front,
+          orElse: () => cameras.first,
+        );
         _cameraController = CameraController(
-          cameras.first,
+          frontCamera,
           ResolutionPreset.medium,
         );
         await _cameraController!.initialize();
@@ -88,7 +93,7 @@ class FaceScanScreenState extends State<FaceScanScreen> {
   }
 
   Future<void> _sendImageToBackend(XFile image) async {
-    final url = Uri.parse('http://127.0.0.1:5000/student/train'); // Update URL
+    final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/student/train'); // Update URL
 
     try {
       var request = http.MultipartRequest('POST', url);

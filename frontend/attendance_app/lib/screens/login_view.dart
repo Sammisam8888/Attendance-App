@@ -28,8 +28,8 @@ class LoginScreenState extends State<LoginScreen> {
     });
 
     final String loginEndpoint = _role == 'Teacher'
-        ? 'http://127.0.0.1:5000/auth/teacher/login'
-        : 'http://127.0.0.1:5000/auth/student/login';
+        ? 'https://rvhhpqvm-5000.inc1.devtunnels.ms/auth/teacher/login'
+        : 'https://rvhhpqvm-5000.inc1.devtunnels.ms/auth/student/login';
 
     final body = {
       "email": _emailController.text.trim(),
