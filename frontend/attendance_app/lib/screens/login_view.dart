@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'teacher_dashboard.dart';
 import 'student_dashboard.dart';
 import 'register_view.dart';
+import 'package:logging/logging.dart'; // Add this import
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,6 +20,7 @@ class LoginScreenState extends State<LoginScreen> {
   String _role = '';
   bool _isLoading = false;
   bool _passwordVisible = false; // Password visibility toggle
+  final Logger logger = Logger('LoginScreen'); // Add this line
 
   Future<void> _login() async {
     setState(() {

@@ -3,6 +3,7 @@ import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'face_scan_view.dart'; // Import the face recognition screen
+import 'package:logging/logging.dart'; // Add this import
 
 class StudentDashboard extends StatefulWidget {
   const StudentDashboard({super.key}); // Convert 'key' to a super parameter
@@ -15,6 +16,7 @@ class StudentDashboardState extends State<StudentDashboard> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   String scannedData = "Scan a QR Code";
+  final Logger logger = Logger('StudentDashboard'); // Add this line
 
   void _onQRViewCreated(QRViewController qrController) {
     controller = qrController;

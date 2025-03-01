@@ -11,8 +11,8 @@ students_collection = db["students"]
 
 # Load Dlib's face detector and models
 detector = dlib.get_frontal_face_detector()
-sp = dlib.shape_predictor("utils/models/shape_predictor_68_face_landmarks.dat")
-facerec = dlib.face_recognition_model_v1("utils/models/dlib_face_recognition_resnet_model_v1.dat")
+sp = dlib.shape_predictor("./models/shape_predictor_68_face_landmarks.dat")
+facerec = dlib.face_recognition_model_v1("./models/dlib_face_recognition_resnet_model_v1.dat")
 
 # Function to capture training images
 def capture_training_images():

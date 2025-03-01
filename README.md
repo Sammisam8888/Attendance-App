@@ -44,12 +44,13 @@ Attendance-app/
 │   │   ├── auth_routes.py       # Login/signup, face verification
 │   │   ├── qr_routes.py         # QR generation & validation
 │   │   ├── attendance_routes.py # Attendance marking logic
+│   │   ├── face_scanner_routes.py # Face scanner endpoints
 │   ├── models/                  # Database models
 │   │   ├── user_model.py        # User (Teacher/Student) model
 │   │   ├── attendance_model.py  # Attendance model
 │   ├── utils/                   # Helper functions
 │   │   ├── qr_generator.py      # QR code generation logic
-│   │   ├── face_match.py        # Face matching logic
+│   │   ├── face_scanner.py      # Face scanner logic
 │   │   ├── token_validator.py   # Token/session validation
 │   ├── templates/               # HTML files for testing API (optional)
 │   ├── static/                  # Static files (if needed)
