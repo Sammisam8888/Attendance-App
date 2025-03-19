@@ -29,7 +29,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   void _startQrRefresh() {
     _qrTimer = Timer.periodic(Duration(seconds: 3), (timer) {
       setState(() {
-        qrImageUrl = 'https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
+        qrImageUrl = 'https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}'; // Updated URL
       });
     });
   }
@@ -37,7 +37,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   // Fetch updated attendance list every 3 seconds
   void _startAttendanceFetch() {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/attendance/get_all_attendance');
+      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance'); // Updated URL
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {

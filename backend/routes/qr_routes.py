@@ -1,5 +1,5 @@
 from flask import Flask, send_file, jsonify, Blueprint, request
-from utils.qr_generator import generate_qr, generate_token
+from utils.qr_generator import generate_qr
 from models.user_model import Student
 import time
 from utils.token_validator import validate_token, token_required

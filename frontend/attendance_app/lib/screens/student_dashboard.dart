@@ -47,7 +47,7 @@ class StudentDashboardState extends State<StudentDashboard> {
   Future<bool> _sendQRToBackend(String qrCode) async {
     if (qrCode.isEmpty) return false;
 
-    final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/student/verify_qr'); // Update the URL for backend QR validation
+    final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/student/verify_qr'); // Updated URL
 
     final response = await http.post(
       url,
@@ -57,21 +57,25 @@ class StudentDashboardState extends State<StudentDashboard> {
 
     if (response.statusCode == 200) {
       final result = jsonDecode(response.body);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(result['message'] ?? 'QR Verified')),
-      );
+      if (mounted) { // Add mounted check before using BuildContext
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(result['message'] ?? 'QR Verified')),
+        );
+      }
       return true; // QR is valid, proceed to face scan
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('QR Verification Failed ❌')),
-      );
+      if (mounted) { // Add mounted check before using BuildContext
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('QR Verification Failed ❌')),
+        );
+      }
       return false; // QR verification failed
     }
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    // Remove the call to controller?.dispose() as it is no longer necessary
     super.dispose();
   }
 

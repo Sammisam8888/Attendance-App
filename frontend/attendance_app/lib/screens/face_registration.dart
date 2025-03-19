@@ -9,10 +9,10 @@ class FaceRegistration extends StatefulWidget {
   const FaceRegistration({super.key});
 
   @override
-  _FaceRegistrationScreenState createState() => _FaceRegistrationScreenState();
+  FaceRegistrationScreenState createState() => FaceRegistrationScreenState(); // Update class name
 }
 
-class _FaceRegistrationScreenState extends State<FaceRegistration> {
+class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove leading underscore
   CameraController? _cameraController;
   bool isCapturing = false;
   int imageCount = 0;
@@ -81,14 +81,17 @@ class _FaceRegistrationScreenState extends State<FaceRegistration> {
     setState(() {
       isCapturing = false;
     });
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => StudentDashboard()),
-    );
+
+    if (mounted) { // Add mounted check before using BuildContext
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => StudentDashboard()),
+      );
+    }
   }
 
   Future<void> _sendImageToBackend(XFile image) async {
-    final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/student/train'); // Update URL
+    final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/student/train'); // Updated URL
 
     try {
       var request = http.MultipartRequest('POST', url);
