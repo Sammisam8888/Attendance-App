@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from utils.face_scanner import train_user, recognize_user
-
 face_scanner_routes = Blueprint('face_scanner_routes', __name__)
 
 # Train a student face

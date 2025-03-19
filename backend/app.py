@@ -3,10 +3,10 @@ from routes.auth_routes import auth_routes
 from routes.qr_routes import qr_routes
 from routes.face_scanner_routes import face_scanner_routes
 from routes.attendance_routes import attendance_routes
-from config import config
-import os
+from config import Config
 
-def create_app(env_name):
+app = Flask(__name__)
+app.config.from_object(Config)
     app = Flask(__name__)
     app.config.from_object(config[env_name])
     # Register blueprints with updated URL prefixes
