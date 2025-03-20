@@ -13,7 +13,7 @@ def generate_token(timestamp=None):
     return hashlib.sha256(unique_token.encode()).hexdigest()
 
 # Generate QR Code
-def generate_qr(timestamp):
+def generate_qr(timestamp=None):
     token = generate_token(timestamp)
     qr = qrcode.make(token)
     img_io = io.BytesIO()

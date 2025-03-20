@@ -47,7 +47,7 @@ class StudentDashboardState extends State<StudentDashboard> {
   Future<bool> _sendQRToBackend(String qrCode) async {
     if (qrCode.isEmpty) return false;
 
-    final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/student/verify_qr'); // Updated URL
+    final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/student/verify_qr'); // Updated URL
 
     final response = await http.post(
       url,
