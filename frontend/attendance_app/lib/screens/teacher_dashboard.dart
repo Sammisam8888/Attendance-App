@@ -12,7 +12,7 @@ class TeacherDashboard extends StatefulWidget {
 }
 
 class TeacherDashboardState extends State<TeacherDashboard> {
-  String qrImageUrl = 'https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/teacher/get_qr';
+  String qrImageUrl = 'https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr';
   List<Map<String, String>> studentList = [];
   Timer? _qrTimer;
   Timer? _attendanceTimer;
@@ -29,14 +29,14 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   void _startQrRefresh() {
     _qrTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
       final response = await http.get(
-        Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}'),
+        Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}'),
         headers: {
           'Authorization': 'Bearer YOUR_TOKEN_HERE', // Add the token here
         },
       );
       if (response.statusCode == 200) {
         setState(() {
-          qrImageUrl = 'https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
+          qrImageUrl = 'https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
         });
       } else {
         // Handle error
@@ -47,7 +47,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
   // Fetch updated attendance list every 3 seconds
   void _startAttendanceFetch() {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/attendance/get_all_attendance'); // Updated URL
+      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance'); // Updated URL
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {

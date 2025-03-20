@@ -31,8 +31,8 @@ class RegisterScreenState extends State<RegisterScreen> {
     }
 
     final url = Uri.parse(_role == 'Teacher' 
-        ? 'https://rvhhpqvm-5000.inc1.devtunnels.ms/auth/teacher/signup'
-        : 'https://rvhhpqvm-5000.inc1.devtunnels.ms/auth/student/signup');
+        ? 'https://vv861fqc-5000.inc1.devtunnels.ms/auth/teacher/signup'
+        : 'https://vv861fqc-5000.inc1.devtunnels.ms/auth/student/signup');
 
     final response = await http.post(
       url,

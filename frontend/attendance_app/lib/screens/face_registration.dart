@@ -91,7 +91,7 @@ class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove le
   }
 
   Future<void> _sendImageToBackend(XFile image) async {
-    final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/student/train'); // Updated URL
+    final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/student/train'); // Updated URL
 
     try {
       var request = http.MultipartRequest('POST', url);

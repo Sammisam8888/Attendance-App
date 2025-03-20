@@ -8,9 +8,6 @@ qr_routes = Blueprint('qr_routes', __name__)
 # Generate QR Code in teacher interface
 @qr_routes.route('/teacher/get_qr', methods=['GET'])
 def get_qr():
-    token = request.headers.get('Authorization')
-    if not token:
-        return jsonify({"message": "Token is missing!", "status": "failed"}), 401
     timestamp = request.args.get('timestamp', default=int(time.time() // 10), type=int)
     return send_file(generate_qr(timestamp), mimetype='image/png')
 
