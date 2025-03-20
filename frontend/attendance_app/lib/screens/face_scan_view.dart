@@ -33,6 +33,7 @@ class FaceScanScreenState extends State<FaceScanScreen> {
         _cameraController = CameraController(
           frontCamera,
           ResolutionPreset.medium,
+          enableAudio: false,
         );
         await _cameraController!.initialize();
         if (mounted) setState(() {});
@@ -132,7 +133,17 @@ class FaceScanScreenState extends State<FaceScanScreen> {
                 Expanded(
                   child: _cameraController == null || !_cameraController!.value.isInitialized
                       ? Center(child: CircularProgressIndicator())
-                      : CameraPreview(_cameraController!),
+                      : AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: ClipRect(
+                            child: Transform.scale(
+                              scale: _cameraController!.value.aspectRatio / (1 / 1),
+                              child: Center(
+                                child: CameraPreview(_cameraController!),
+                              ),
+                            ),
+                          ),
+                        ),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
