@@ -1,22 +1,25 @@
-from flask import Flask, send_file, jsonify
 import qrcode
-import time
-import io
-from flask import Blueprint, send_file, request, jsonify
 import hashlib
+import time
+from io import BytesIO
+
+def generate_qr(timestamp):
+    # Generate a QR code image for the given timestamp
+    qr_data = generate_token(timestamp)
+    qr = qrcode.QRCode(version=1, error_correction=qrcode.constants.ERROR_CORRECT_L, box_size=10, border=4)
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    buffer.seek(0)
+    return buffer
 
 def generate_token(timestamp=None):
+    # Generate a unique token based on the timestamp
     if timestamp is None:
-        timestamp = int(time.time() // 3)  # Change every 3 seconds
-    secret_key = "secure_secret"
-    unique_token = f"{secret_key}_{timestamp}"
-    return hashlib.sha256(unique_token.encode()).hexdigest()
+        timestamp = int(time.time() // 10)
+    secret_key = "your_secret_key"  # Replace with a secure key
+    token = hashlib.sha256(f"{timestamp}{secret_key}".encode()).hexdigest()
+    return token
 
-# Generate QR Code
-def generate_qr(timestamp):
-    token = generate_token(timestamp)
-    qr = qrcode.make(token)
-    img_io = io.BytesIO()
-    qr.save(img_io, 'PNG')
-    img_io.seek(0)
-    return img_io
