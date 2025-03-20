@@ -13,4 +13,4 @@ app.register_blueprint(face_scanner_routes, url_prefix='/face_scanner')
 app.register_blueprint(attendance_routes, url_prefix='/attendance')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)  # Explicitly set the port to 5000
