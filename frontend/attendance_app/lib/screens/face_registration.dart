@@ -24,7 +24,6 @@ class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove le
     try {
       cameras = await availableCameras();
       if (cameras.isNotEmpty) {
-        // Use the front camera if available
         final frontCamera = cameras.firstWhere(
           (camera) => camera.lensDirection == CameraLensDirection.front,
           orElse: () => cameras.first,
@@ -32,6 +31,7 @@ class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove le
         _cameraController = CameraController(
           frontCamera,
           ResolutionPreset.medium,
+          enableAudio: false,
         );
         await _cameraController!.initialize();
         setState(() {});
@@ -130,7 +130,17 @@ class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove le
                 Expanded(
                   child: _cameraController == null || !_cameraController!.value.isInitialized
                       ? Center(child: CircularProgressIndicator())
-                      : CameraPreview(_cameraController!),
+                      : AspectRatio(
+                          aspectRatio: 1 / 1,
+                          child: ClipRect(
+                            child: Transform.scale(
+                              scale: _cameraController!.value.aspectRatio / (1 / 1),
+                              child: Center(
+                                child: CameraPreview(_cameraController!),
+                              ),
+                            ),
+                          ),
+                        ),
                 ),
                 SizedBox(height: 20),
                 ElevatedButton(
