@@ -36,14 +36,14 @@ class _QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProv
   void _startQrRefresh(String classId) {
     _qrTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
       final response = await http.get(
-        Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}'), // Add subject code
+        Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}'), // Updated URL
         headers: {
           'Authorization': 'Bearer YOUR_TOKEN_HERE',
         },
       );
       if (response.statusCode == 200) {
         setState(() {
-          qrImageUrl = 'https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}';
+          qrImageUrl = 'https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}';
           _animationController.reset();
           _animationController.forward();
         });
@@ -55,7 +55,7 @@ class _QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProv
 
   void _startAttendanceFetch(String classId) {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId');
+      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId'); // Updated URL
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {

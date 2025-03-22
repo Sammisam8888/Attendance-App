@@ -24,7 +24,7 @@ class _ViewDetailsScreenState extends State<ViewDetailsScreen> {
   }
 
   Future<void> _fetchClassDetails() async {
-    final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/class_details?classId=${widget.classId}&subjectCode=${widget.subjectCode}'); // Add subject code
+    final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/class_details?classId=${widget.classId}&subjectCode=${widget.subjectCode}'); // Updated URL
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {

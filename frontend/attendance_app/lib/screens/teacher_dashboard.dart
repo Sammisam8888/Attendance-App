@@ -81,7 +81,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
   // Fetch updated attendance list every 3 seconds
   void _startAttendanceFetch(String classId) {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId'); // Updated URL
+      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId'); // Updated URL
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {
