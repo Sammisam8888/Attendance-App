@@ -6,9 +6,10 @@ import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
 
 class FaceScanScreen extends StatefulWidget {
-  const FaceScanScreen({super.key, required this.qrCode});
+  const FaceScanScreen({super.key, required this.qrCode, required this.subjectCode}); // Add subject code
 
   final String qrCode;
+  final String subjectCode; // Add subject code
   @override
   FaceScanScreenState createState() => FaceScanScreenState();
 }
@@ -78,7 +79,7 @@ class FaceScanScreenState extends State<FaceScanScreen> {
         }
         await Future.delayed(Duration(milliseconds: 500));
       } catch (e) {
-        _logger.severe("Error capturing image: $e"); // Replace logger.e
+        _logger.severe("Error capturing image: $e");
       }
     }
 
@@ -88,13 +89,14 @@ class FaceScanScreenState extends State<FaceScanScreen> {
       });
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => StudentDashboard()),
+        MaterialPageRoute(
+          builder: (context) => StudentDashboard()),
       );
     }
   }
 
   Future<void> _sendImageToBackend(XFile image) async {
-    final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/student/train'); // Updated URL
+    final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/student/train'); // Updated URL
 
     try {
       var request = http.MultipartRequest('POST', url);

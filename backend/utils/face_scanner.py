@@ -40,7 +40,7 @@ def capture_training_images():
     return images
 
 # Train User (Store Face Encoding in Student Collection)
-def train_user(name, roll_no):
+def train_user(name, roll_no, subject_code):
     images = capture_training_images()
     encodings = []
 
@@ -58,7 +58,7 @@ def train_user(name, roll_no):
 
         # Update student record with face encoding
         students_collection.update_one(
-            {"roll_no": roll_no},
+            {"roll_no": roll_no, "subject_code": subject_code},
             {"$set": {"face_encoding": avg_encoding}},
             upsert=True
         )
@@ -71,7 +71,7 @@ def cosine_similarity(A, B):
     return np.dot(A, B) / (np.linalg.norm(A) * np.linalg.norm(B))
 
 # Recognize User
-def recognize_user():
+def recognize_user(subject_code):
     cap = cv2.VideoCapture(0)
 
     while True:
@@ -86,7 +86,7 @@ def recognize_user():
             shape = sp(gray, face)
             test_encoding = np.array(facerec.compute_face_descriptor(gray, shape))
 
-            students = students_collection.find({}, {"name": 1, "roll_no": 1, "face_encoding": 1})
+            students = students_collection.find({"subject_code": subject_code}, {"name": 1, "roll_no": 1, "face_encoding": 1})
 
             best_match_name = "Unknown"
             best_match_roll_no = None
