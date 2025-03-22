@@ -4,13 +4,13 @@ class AttendanceModel:
     collection = db.attendance
 
     @staticmethod
-    def mark_attendance(email, name, roll_no, timestamp, subject_name, classroom_number):
+    def mark_attendance(email, name, roll_no, timestamp, subject_code, classroom_number):
         record = {
             "email": email,
             "name": name,
             "roll_no": roll_no,
             "timestamp": timestamp,
-            "subject_name": subject_name,
+            "subject_code": subject_code,
             "classroom_number": classroom_number
         }
         AttendanceModel.collection.insert_one(record)
