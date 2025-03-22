@@ -7,11 +7,11 @@ from database import db
 def add_sample_data():
     try:
         if not Teacher.find_by_email("t"):
-            sample_teacher = Teacher(name="Teacher", email="t", password="t", teacher_id="T1001")
+            sample_teacher = Teacher(name="Teacher", email="t", password="t", teacher_id="T1001", subject_specialisation="Math", assigned_classes=["Class1"])
             sample_teacher.save_to_db()
         
         if not Student.find_by_email("s"):
-            sample_student = Student(name="Sammi", email="s", password="s", roll_no="s")
+            sample_student = Student(name="Sammi", email="s", password="s", roll_no="s", branch="CS", semester="5", subject_code="CS101")
             sample_student.save_to_db()
     except ServerSelectionTimeoutError:
         print("Database connection error. Could not add sample data.")
