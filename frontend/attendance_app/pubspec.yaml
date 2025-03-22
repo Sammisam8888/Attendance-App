@@ -37,9 +37,9 @@ dependencies:
   http: ^1.1.0 # Replace with the actual latest stable version
   camera: ^0.11.1  # Add camera package for face scanning
   image_picker: ^1.1.2  # Add image picker package for face scanning
-  qr_code_scanner_plus: ^2.0.10+1  # Add QR code scanner package
-  logging: ^1.0.0
-  permission_handler: ^11.4.0  # Updated to the latest stable version
+  qr_code_scanner_plus: ^2.0.10+1  # Corrected version
+  logging: ^1.2.0  # Updated version
+  permission_handler: ^11.0.1  # Updated version
   logger: ^2.5.0  # Updated to the latest stable version
 
 dev_dependencies:

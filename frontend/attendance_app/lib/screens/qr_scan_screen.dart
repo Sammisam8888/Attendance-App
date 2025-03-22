@@ -1,56 +1,92 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-import 'face_scan_view.dart'; // Import the face recognition screen
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:logging/logging.dart';
+import 'face_scan_view.dart';
 
 class QRScanScreen extends StatefulWidget {
+  const QRScanScreen({super.key});
+
   @override
-  _QRScanScreenState createState() => _QRScanScreenState();
+  QRScanScreenState createState() => QRScanScreenState();
 }
 
-class _QRScanScreenState extends State<QRScanScreen> {
+class QRScanScreenState extends State<QRScanScreen> {
+  final Logger _logger = Logger('QRScanScreen');
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
-  String scannedData = "Scan a QR Code";
+  bool isScanning = true;
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (controller != null) {
+      controller!.pauseCamera();
+      Future.delayed(Duration(milliseconds: 200), () {
+        controller!.resumeCamera();
+      });
+    }
+  }
 
   void _onQRViewCreated(QRViewController qrController) {
-    controller = qrController;
+    setState(() {
+      controller = qrController;
+    });
+
+    if (!isScanning) return;
+
     controller!.scannedDataStream.listen((scanData) async {
+      if (!isScanning) return;
+
       setState(() {
-        scannedData = scanData.code ?? "Invalid QR Code";
+        isScanning = false; // Prevent multiple scans
       });
 
-      // Validate QR Code with backend
-      bool isValid = await _sendQRToBackend(scanData.code ?? "");
+      try {
+        _logger.info("Scanned QR Code: ${scanData.code}");
 
-      if (!mounted) return;
+        // Validate QR Code
+        bool isValid = await _sendQRToBackend(scanData.code ?? "");
 
-      if (isValid) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('QR Verified'),
-            duration: Duration(seconds: 5),
-          ),
-        );
-        await Future.delayed(Duration(seconds: 5));
-        if (mounted) {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) => FaceScanScreen(qrCode: scanData.code ?? ""),
-            ),
-          );
+        if (!mounted) return;
+
+        if (isValid) {
+          await _handleValidQR(scanData.code);
+        } else {
+          _handleInvalidQR();
         }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('QR Verification Failed ❌'),
-            duration: Duration(seconds: 5),
-          ),
-        );
+      } catch (e) {
+        _logger.severe("Error processing QR code: $e");
+        _showError("Error processing QR code");
+      } finally {
+        if (mounted) {
+          setState(() {
+            isScanning = true; // Re-enable scanning
+          });
+        }
       }
     });
+  }
+
+  Future<void> _handleValidQR(String? qrCode) async {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('QR Verified'), duration: Duration(seconds: 5)),
+    );
+    await Future.delayed(Duration(seconds: 5));
+    if (mounted) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => FaceScanScreen(qrCode: qrCode ?? ""),
+        ),
+      );
+    }
+  }
+
+  void _handleInvalidQR() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('QR Verification Failed ❌'), duration: Duration(seconds: 5)),
+    );
   }
 
   Future<bool> _sendQRToBackend(String qrCode) async {
@@ -58,18 +94,25 @@ class _QRScanScreenState extends State<QRScanScreen> {
 
     final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/student/verify_qr/$qrCode');
 
-    final response = await http.get(url);
-
-    if (response.statusCode == 200) {
-      return true;
-    } else {
+    try {
+      final response = await http.get(url);
+      return response.statusCode == 200;
+    } catch (e) {
+      _logger.severe("Error sending QR code to backend: $e");
       return false;
     }
   }
 
+  void _showError(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message), backgroundColor: Colors.red),
+    );
+  }
+
   @override
   void dispose() {
-    controller?.dispose();
+    // Removed controller?.dispose() as it is no longer necessary
     super.dispose();
   }
 
@@ -90,7 +133,7 @@ class _QRScanScreenState extends State<QRScanScreen> {
             flex: 1,
             child: Center(
               child: Text(
-                scannedData,
+                "Scan a QR Code",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
             ),
