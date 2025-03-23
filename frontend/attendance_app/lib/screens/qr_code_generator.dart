@@ -3,6 +3,8 @@ import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:logging/logging.dart';
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class QRCodeGenerator extends StatefulWidget {
   final String classId;
@@ -106,7 +108,15 @@ class _QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProv
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('QR Code Generator')),
+      appBar: AppBar(
+        title: Text('QR Code Generator'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),

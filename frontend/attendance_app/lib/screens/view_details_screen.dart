@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:logging/logging.dart';
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class ViewDetailsScreen extends StatefulWidget {
   final String classId;
@@ -42,7 +44,15 @@ class _ViewDetailsScreenState extends State<ViewDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Class Details')),
+      appBar: AppBar(
+        title: Text('Class Details'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: classDetails == null
           ? Center(child: CircularProgressIndicator())
           : Padding(

@@ -3,6 +3,8 @@ import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
 import 'face_scan_view.dart';
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class QRScanScreen extends StatefulWidget {
   const QRScanScreen({super.key});
@@ -119,7 +121,15 @@ class QRScanScreenState extends State<QRScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Scan QR Code')),
+      appBar: AppBar(
+        title: Text('Scan QR Code'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: Column(
         children: [
           Expanded(

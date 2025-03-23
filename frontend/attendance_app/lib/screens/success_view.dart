@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class SuccessScreen extends StatelessWidget {
   final String subject; // Subject for which attendance is registered
@@ -9,7 +11,15 @@ class SuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Attendance Success')),
+      appBar: AppBar(
+        title: Text('Attendance Success'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

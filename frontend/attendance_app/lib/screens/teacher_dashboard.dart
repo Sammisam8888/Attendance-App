@@ -8,6 +8,8 @@ import 'package:logging/logging.dart'; // Correct import
 import 'qr_code_generator.dart'; // Import the QRCodeGenerator screen
 import 'view_details_screen.dart'; // Import the ViewDetailsScreen
 import 'package:intl/intl.dart'; // Import for date and time formatting
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class TeacherDashboard extends StatefulWidget {
   const TeacherDashboard({super.key});
@@ -255,6 +257,10 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
       appBar: AppBar(
         title: Text('Teacher Dashboard'),
         actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(

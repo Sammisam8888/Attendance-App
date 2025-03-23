@@ -4,7 +4,8 @@ import 'dart:convert';
 import 'teacher_dashboard.dart';
 import 'student_dashboard.dart';
 import 'register_view.dart';
-import 'package:logging/logging.dart'; // Add this import
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,13 +15,16 @@ class LoginScreen extends StatefulWidget {
 }
 
 class LoginScreenState extends State<LoginScreen> {
+  void toggleThemeMode() {
+    themeNotifier.value = themeNotifier.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+    logger.info('Theme mode toggled');
+  }
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _rollNoController = TextEditingController(); // Add this line
   String _role = '';
   bool _isLoading = false;
   bool _passwordVisible = false; // Password visibility toggle
-  final Logger logger = Logger('LoginScreen'); // Add this line
 
   Future<void> _login() async {
     setState(() {
@@ -116,7 +120,15 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(
+        title: Text('Login'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: SingleChildScrollView( // Wrap the body in SingleChildScrollView
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // Dismiss keyboard on scroll
         child: Padding(

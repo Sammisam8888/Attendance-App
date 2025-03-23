@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'login_view.dart';
-import 'package:logging/logging.dart'; // Add this import
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key}); // Convert 'key' to a super parameter
@@ -12,6 +13,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class RegisterScreenState extends State<RegisterScreen> {
+  void toggleThemeMode() {
+    themeNotifier.value = themeNotifier.value == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
+  }
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -25,7 +29,6 @@ class RegisterScreenState extends State<RegisterScreen> {
   String _role = 'Student'; // Default role
   bool _passwordVisible = false;
   bool _confirmPasswordVisible = false;
-  final Logger logger = Logger('RegisterScreen'); // Add this line
 
   Future<void> _register() async {
     if (_passwordController.text.trim() != _confirmPasswordController.text.trim()) {
@@ -84,7 +87,15 @@ class RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Register')),
+      appBar: AppBar(
+        title: Text('Register'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: SingleChildScrollView( // Wrap the body in SingleChildScrollView
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // Dismiss keyboard on scroll
         child: Padding(

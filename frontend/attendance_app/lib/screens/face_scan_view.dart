@@ -4,6 +4,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:logging/logging.dart'; // Correct import
 import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class FaceScanScreen extends StatefulWidget {
   const FaceScanScreen({super.key, required this.qrCode, required this.subjectCode}); // Add subject code
@@ -128,7 +130,15 @@ class FaceScanScreenState extends State<FaceScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Face Registration')),
+      appBar: AppBar(
+        title: Text('Face Registration'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: _isCameraPermissionGranted
           ? Column(
               children: [

@@ -4,6 +4,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:logging/logging.dart'; // Correct import
 import 'student_dashboard.dart';
 import 'package:http/http.dart' as http;
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class FaceRegistration extends StatefulWidget {
   const FaceRegistration({super.key});
@@ -124,7 +126,15 @@ class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove le
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Face Registration')),
+      appBar: AppBar(
+        title: Text('Face Registration'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: _isCameraPermissionGranted
           ? Column(
               children: [

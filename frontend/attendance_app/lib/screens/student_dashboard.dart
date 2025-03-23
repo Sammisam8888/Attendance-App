@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'qr_scan_screen.dart'; // Import the QR scan screen
 import 'face_registration.dart'; // Import the face registration screen
+import 'logger.dart'; // Import the logger and theme toggle
+import '../utils/themes.dart'; // Import themes
 
 class StudentDashboard extends StatefulWidget {
   const StudentDashboard({super.key});
@@ -42,7 +44,15 @@ class _StudentDashboardState extends State<StudentDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Student Dashboard')),
+      appBar: AppBar(
+        title: Text('Student Dashboard'),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.brightness_6),
+            onPressed: toggleThemeMode, // Use the toggle function
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
