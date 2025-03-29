@@ -1,8 +1,13 @@
+// ignore_for_file: unused_field, unused_element
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 import 'dart:convert';
 import 'package:logging/logging.dart'; // Correct import
+import 'qr_code_generator.dart'; // Import the QRCodeGenerator screen
+import 'view_details_screen.dart'; // Import the ViewDetailsScreen
+import 'package:intl/intl.dart'; // Import for date and time formatting
 
 class TeacherDashboard extends StatefulWidget {
   const TeacherDashboard({super.key});
@@ -11,43 +16,72 @@ class TeacherDashboard extends StatefulWidget {
   TeacherDashboardState createState() => TeacherDashboardState();
 }
 
-class TeacherDashboardState extends State<TeacherDashboard> {
-  String qrImageUrl = 'https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr';
+class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerProviderStateMixin {
   List<Map<String, String>> studentList = [];
-  Timer? _qrTimer;
+  List<Map<String, String>> classList = [];
+  String teacherName = "Teacher"; // Default teacher name
   Timer? _attendanceTimer;
+  Timer? _clockTimer;
+  String currentTime = ""; // Current time
   final Logger _logger = Logger('TeacherDashboardState'); // Update logger initialization
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
-    _startQrRefresh();
-    _startAttendanceFetch();
+    _animationController = AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
+    _animationController.forward(); // Ensure the animation starts
+    _initializeSampleData(); // Initialize sample data
+    _initializeTeacherName(); // Initialize sample teacher name
+    _startClock(); // Start the clock
   }
 
-  // Refresh the QR image every 3 seconds
-  void _startQrRefresh() {
-    _qrTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final response = await http.get(
-        Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}'),
-        headers: {
-          'Authorization': 'Bearer YOUR_TOKEN_HERE', // Add the token here
+  void _startClock() {
+    _clockTimer = Timer.periodic(Duration(seconds: 1), (timer) {
+      setState(() {
+        currentTime = DateFormat('hh:mm a').format(DateTime.now());
+      });
+    });
+  }
+
+  void _initializeSampleData() {
+    setState(() {
+      classList = [
+        {
+          'classroom': '101',
+          'branch': 'Computer Science',
+          'semester': '5',
+          'subject': 'Data Structures',
+          'subjectCode': 'CS201',
+          'timing': '09:00 AM',
+          'notesLink': 'http://example.com/notes',
         },
-      );
-      if (response.statusCode == 200) {
-        setState(() {
-          qrImageUrl = 'https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?timestamp=${DateTime.now().millisecondsSinceEpoch}';
-        });
-      } else {
-        // Handle error
-      }
+        {
+          'classroom': '102',
+          'branch': 'Electronics',
+          'semester': '3',
+          'subject': 'Circuit Theory',
+          'subjectCode': 'EC101',
+          'timing': '11:00 AM',
+          'notesLink': 'http://example.com/notes',
+        },
+        // Add more sample data as needed
+      ];
+    });
+  }
+
+  void _initializeTeacherName() {
+    setState(() {
+      teacherName = 'Dr. Jane Doe';
     });
   }
 
   // Fetch updated attendance list every 3 seconds
-  void _startAttendanceFetch() {
+  void _startAttendanceFetch(String classId) {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance'); // Updated URL
+      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId'); // Updated URL
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {
@@ -60,6 +94,7 @@ class TeacherDashboardState extends State<TeacherDashboard> {
               };
             }).toList();
           });
+          _updateAttendanceInDatabase(classId, studentList);
         }
       } catch (e) {
         _logger.severe('Error fetching attendance: $e'); // Replace logger.e
@@ -67,55 +102,228 @@ class TeacherDashboardState extends State<TeacherDashboard> {
     });
   }
 
+  // Update attendance in the database
+  Future<void> _updateAttendanceInDatabase(String classId, List<Map<String, String>> studentList) async {
+    final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/attendance/store_attendance');
+    try {
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "classId": classId,
+          "students": studentList,
+        }),
+      );
+      if (response.statusCode != 200) {
+        _logger.warning('Failed to update attendance in database');
+      }
+    } catch (e) {
+      _logger.severe('Error updating attendance in database: $e');
+    }
+  }
+
+  void _showAddClassModal(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        String classroom = '';
+        String branch = '';
+        String semester = '';
+        String subject = '';
+        String subjectCode = ''; // Add subject code
+        String timing = '';
+        String notesLink = '';
+
+        return AlertDialog(
+          title: Text('Add New Class Schedule'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  decoration: InputDecoration(labelText: 'Classroom'),
+                  onChanged: (value) {
+                    classroom = value;
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Branch'),
+                  onChanged: (value) {
+                    branch = value;
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Semester'),
+                  onChanged: (value) {
+                    semester = value;
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Subject'),
+                  onChanged: (value) {
+                    subject = value;
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Subject Code'),
+                  onChanged: (value) {
+                    subjectCode = value;
+                  },
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Timing'),
+                  onTap: () async {
+                    TimeOfDay? pickedTime = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    if (pickedTime != null) {
+                      setState(() {
+                        timing = pickedTime.format(context);
+                      });
+                    }
+                  },
+                  readOnly: true,
+                  controller: TextEditingController(text: timing),
+                ),
+                TextField(
+                  decoration: InputDecoration(labelText: 'Notes Link'),
+                  onChanged: (value) {
+                    notesLink = value;
+                  },
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                setState(() {
+                  classList.add({
+                    'classroom': classroom,
+                    'branch': branch,
+                    'semester': semester,
+                    'subject': subject,
+                    'subjectCode': subjectCode, // Add subject code
+                    'timing': timing,
+                    'notesLink': notesLink,
+                  });
+                });
+                final response = await http.post(
+                  Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/store_class_schedule'),
+                  headers: {"Content-Type": "application/json"},
+                  body: jsonEncode({
+                    'classroom': classroom,
+                    'branch': branch,
+                    'semester': semester,
+                    'subject': subject,
+                    'subject_code': subjectCode, // Add subject code
+                    'timing': timing,
+                    'notes_link': notesLink,
+                  }),
+                );
+                if (response.statusCode == 200) {
+                  Navigator.of(context).pop();
+                } else {
+                  // Handle error
+                }
+              },
+              child: Text('Add'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
-    _qrTimer?.cancel();
     _attendanceTimer?.cancel();
+    _clockTimer?.cancel();
+    _animationController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Teacher Dashboard')),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            Text("Scan the QR code for attendance", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 20),
-            Image.network(
-              qrImageUrl,
-              key: ValueKey(qrImageUrl),
-              width: 200,
-              height: 200,
-              errorBuilder: (context, error, stackTrace) {
-                return Text("Failed to load QR code ❌");
-              },
+      appBar: AppBar(
+        title: Text('Teacher Dashboard'),
+        actions: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              onPressed: () => _showAddClassModal(context),
+              child: Row(
+                children: [
+                  Icon(Icons.add),
+                  SizedBox(width: 4),
+                  Text('Add Class'),
+                ],
+              ),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Colors.white,
+                shadowColor: Colors.black.withOpacity(0.2),
+                elevation: 3,
+              ),
             ),
-            SizedBox(height: 20),
-            Text("Students Marked Present:", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 10),
-            studentList.isEmpty
-                ? Center(child: Text("No students marked present yet."))
-                : Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: DataTable(
-                        columns: [
-                          DataColumn(label: Text('Roll No')),
-                          DataColumn(label: Text('Name')),
-                        ],
-                        rows: studentList.map((student) {
-                          return DataRow(cells: [
-                            DataCell(Text(student['roll']!)),
-                            DataCell(Text(student['name']!)),
-                          ]);
-                        }).toList(),
-                      ),
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              Text("Hello, $teacherName!", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              SizedBox(height: 20),
+              Text("Today's Classes:", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              Text("Current Time: $currentTime", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), // Display current time
+              SizedBox(height: 10),
+              ...classList.map((classInfo) {
+                return Card(
+                  child: ListTile(
+                    title: Text("${classInfo['subject']} (${classInfo['subjectCode']}) - ${classInfo['branch']} - Semester ${classInfo['semester']}"), // Display subject code
+                    subtitle: Text("Classroom: ${classInfo['classroom']} | Timing: ${classInfo['timing']}"),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => QRCodeGenerator(classId: classInfo['classroom']!, subjectCode: classInfo['subjectCode']!), // Add subject code
+                              ),
+                            );
+                          },
+                          child: Text("Activate QR"),
+                        ),
+                        SizedBox(width: 8),
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ViewDetailsScreen(classId: classInfo['classroom']!, subjectCode: classInfo['subjectCode']!), // Add subject code
+                              ),
+                            );
+                          },
+                          child: Text("View Details"),
+                        ),
+                      ],
                     ),
                   ),
-          ],
+                );
+              }).toList(),
+            ],
+          ),
         ),
       ),
     );

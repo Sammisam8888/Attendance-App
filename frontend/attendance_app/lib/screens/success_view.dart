@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class SuccessScreen extends StatelessWidget {
   final String subject; // Subject for which attendance is registered
+  final String subjectCode; // Add subject code
 
-  const SuccessScreen({super.key, required this.subject}); // Convert 'key' to a super parameter
+  const SuccessScreen({super.key, required this.subject, required this.subjectCode}); // Add subject code
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,10 @@ class SuccessScreen extends StatelessWidget {
             SizedBox(height: 10),
             Text(
               "Subject: $subject",
+              style: TextStyle(fontSize: 16),
+            ),
+            Text(
+              "Subject Code: $subjectCode",
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 30),

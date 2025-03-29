@@ -8,17 +8,21 @@ def train():
     data = request.json
     name = data.get("name")
     roll_no = data.get("roll_no")
+    subject_code = data.get("subject_code")
 
-    if not name or not roll_no:
-        return jsonify({"message": "Name and Roll Number are required"}), 400
+    if not name or not roll_no or not subject_code:
+        return jsonify({"message": "Name, Roll Number, and Subject Code are required"}), 400
 
-    response, status = train_user(name, roll_no)
+    response, status = train_user(name, roll_no, subject_code)
     return jsonify(response), status
 
 # Recognize a student face
 @face_scanner_routes.route('/student/recognize', methods=['GET'])
 def recognize():
-    
-    response, status = recognize_user()
+    subject_code = request.args.get("subject_code")
+    if not subject_code:
+        return jsonify({"message": "Subject Code is required"}), 400
+
+    response, status = recognize_user(subject_code)
     return jsonify(response), status
 

@@ -28,9 +28,12 @@ class User:
 
 
 class Student(User):
-    def __init__(self, name, email, password, roll_no):
+    def __init__(self, name, email, password, roll_no, branch, semester, subject_code):
         super().__init__(name, email, password)
         self.roll_no = roll_no  # Unique Student Identifier
+        self.branch = branch  # Branch name
+        self.semester = semester  # Semester
+        self.subject_code = subject_code  # Subject code
         self.face_encoding = None  # Initialize face data as None
 
     def save_to_db(self):
@@ -52,22 +55,24 @@ class Student(User):
         encoding_list = encoding.tolist()  # Convert NumPy array to list before storing
 
         db.students.update_one(
-            {"roll_no": self.roll_no},
+            {"roll_no": self.roll_no, "subject_code": self.subject_code},
             {"$set": {"face_encoding": encoding_list}}
         )
         return {"message": "Face data saved successfully"}, 200
 
     @staticmethod
-    def get_face_encoding(roll_no):
-        """Fetches the stored face encoding for a student by roll number."""
-        student = db.students.find_one({"roll_no": roll_no}, {"_id": 0, "face_encoding": 1})
+    def get_face_encoding(roll_no, subject_code):
+        """Fetches the stored face encoding for a student by roll number and subject code."""
+        student = db.students.find_one({"roll_no": roll_no, "subject_code": subject_code}, {"_id": 0, "face_encoding": 1})
         return np.array(student["face_encoding"]) if student and "face_encoding" in student else None
 
 
 class Teacher(User):
-    def __init__(self, name, email, password, teacher_id):
+    def __init__(self, name, email, password, teacher_id, subject_specialisation, assigned_classes):
         super().__init__(name, email, password)
         self.teacher_id = teacher_id
+        self.subject_specialisation = subject_specialisation  # Subject specialisation
+        self.assigned_classes = assigned_classes  # Reference to assigned classes
 
     def save_to_db(self):
         if db.teachers.find_one({"email": self.email}):

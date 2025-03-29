@@ -85,7 +85,8 @@ class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove le
     if (mounted) { // Add mounted check before using BuildContext
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => StudentDashboard()),
+        MaterialPageRoute(
+          builder: (context) => StudentDashboard()),
       );
     }
   }
