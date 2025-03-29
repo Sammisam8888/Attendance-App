@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart'; // Updated package
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert'; // Added for JSON encoding/decoding
+import 'package:logging/logging.dart';
 import 'face_scan_view.dart';
 
 class QRScanScreen extends StatefulWidget {
@@ -12,6 +12,7 @@ class QRScanScreen extends StatefulWidget {
 }
 
 class QRScanScreenState extends State<QRScanScreen> {
+  final Logger _logger = Logger('QRScanScreen');
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
   bool isScanning = true;
@@ -42,17 +43,20 @@ class QRScanScreenState extends State<QRScanScreen> {
       });
 
       try {
-        String qrToken = scanData.code ?? "";
-        bool isValid = await _sendQRToBackend(qrToken);
+        _logger.info("Scanned QR Code: ${scanData.code}");
+
+        // Validate QR Code
+        bool isValid = await _sendQRToBackend(scanData.code ?? "");
 
         if (!mounted) return;
 
         if (isValid) {
-          await _handleValidQR(qrToken);
+          await _handleValidQR(scanData.code);
         } else {
           _handleInvalidQR();
         }
       } catch (e) {
+        _logger.severe("Error processing QR code: $e");
         _showError("Error processing QR code");
       } finally {
         if (mounted) {
@@ -64,7 +68,7 @@ class QRScanScreenState extends State<QRScanScreen> {
     });
   }
 
-  Future<void> _handleValidQR(String qrCode) async {
+  Future<void> _handleValidQR(String? qrCode) async {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text('QR Verified'), duration: Duration(seconds: 5)),
     );
@@ -73,7 +77,7 @@ class QRScanScreenState extends State<QRScanScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => FaceScanScreen(qrCode: qrCode),
+          builder: (context) => FaceScanScreen(qrCode: qrCode ?? "", subjectCode: "CS101"), // Add subject code
         ),
       );
     }
@@ -88,23 +92,15 @@ class QRScanScreenState extends State<QRScanScreen> {
   Future<bool> _sendQRToBackend(String qrCode) async {
     if (qrCode.isEmpty) return false;
 
-    final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/student/verify_qr');
-    final payload = jsonEncode({"qr_token": qrCode});
+    final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/student/verify_qr/$qrCode'); // Updated URL
 
     try {
-      final response = await http.post(
-        url,
-        headers: {"Content-Type": "application/json"},
-        body: payload,
-      );
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        return data["success"] ?? false;
-      }
+      final response = await http.get(url);
+      return response.statusCode == 200;
     } catch (e) {
-      _showError("Error sending QR code to backend");
+      _logger.severe("Error sending QR code to backend: $e");
+      return false;
     }
-    return false;
   }
 
   void _showError(String message) {
@@ -116,7 +112,7 @@ class QRScanScreenState extends State<QRScanScreen> {
 
   @override
   void dispose() {
-    controller?.dispose(); // Dispose controller properly
+    // Removed controller?.dispose() as it is no longer necessary
     super.dispose();
   }
 
