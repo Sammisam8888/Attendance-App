@@ -1,5 +1,5 @@
 from flask import Flask, send_file, jsonify, Blueprint, request
-from utils.qr_generator import generate_qr, generate_token
+from utils.qr_generator import generate_qr
 from models.user_model import Student
 import time
 from utils.token_validator import validate_token
@@ -18,7 +18,7 @@ def verify_qr():
     scanned_token = data.get('token')
     email = data.get('email')
 
-    if validate_token(scanned_token, tolerance=1):  # Use token validation with tolerance
+    if validate_token(scanned_token):  # Use MongoDB-backed token validation
         student = Student.find_by_email(email)
         if student:
             return jsonify({
@@ -26,7 +26,7 @@ def verify_qr():
                 "status": "success",
                 "name": student["name"],
                 "roll_no": student["roll_no"],
-                "timestamp": int(time.time() // 10)
+                "timestamp": int(time.time())
             }), 200
     return jsonify({"message": "Invalid or Expired QR Code", "status": "failed"}), 400
 
