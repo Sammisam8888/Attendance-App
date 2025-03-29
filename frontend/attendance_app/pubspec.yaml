@@ -42,6 +42,7 @@ dependencies:
   logging: ^1.2.0  # Updated version
   permission_handler: ^11.0.1  # Updated version
   logger: ^2.5.0  # Updated to the latest stable version
+  intl: ^0.18.0 # Add this line to include the intl package
 
 dev_dependencies:
   flutter_test:
