@@ -2,16 +2,30 @@ from flask import Flask, send_file, jsonify
 import qrcode
 import time
 import io
-from flask import Blueprint, send_file, request, jsonify
 import hashlib
+import jwt
+import secrets
+from database import db  # Import the database connection
+
+SECRET_KEY = "your_secret_key"  # Use a secure secret key for JWT
+
+qr_collection = db["qr_tokens"]
+
+# Ensure the TTL index exists
+qr_collection.create_index("timestamp", expireAfterSeconds=3)
 
 def generate_token(timestamp=None):
     if timestamp is None:
         timestamp = int(time.time() // 3)  # Change every 3 seconds
-    secret_key = "secure_secret"
-    unique_token = f"{secret_key}_{timestamp}"
-    token = hashlib.sha256(unique_token.encode()).hexdigest()
+    payload = {
+        "timestamp": timestamp,
+        "nonce": secrets.token_hex(8)
+    }
+    token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")  # Generate JWT token
     print(f"Generated Token: {token}")  # Debugging: Print the generated token
+
+    # Store the token in MongoDB with a timestamp
+    qr_collection.insert_one({"qr_token": token, "timestamp": int(time.time())})
     return token
 
 # Generate QR Code

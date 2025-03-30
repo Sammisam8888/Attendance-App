@@ -6,10 +6,10 @@ class StudentDashboard extends StatefulWidget {
   const StudentDashboard({super.key});
 
   @override
-  _StudentDashboardState createState() => _StudentDashboardState();
+  StudentDashboardState createState() => StudentDashboardState(); // Updated to use the public class
 }
 
-class _StudentDashboardState extends State<StudentDashboard> {
+class StudentDashboardState extends State<StudentDashboard> { // Made public
   String studentName = "John Doe"; // Example student name
   List<Map<String, String>> attendedClasses = [];
 

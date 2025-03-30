@@ -10,10 +10,10 @@ class ViewDetailsScreen extends StatefulWidget {
   const ViewDetailsScreen({super.key, required this.classId, required this.subjectCode}); // Add subject code
 
   @override
-  _ViewDetailsScreenState createState() => _ViewDetailsScreenState();
+  ViewDetailsScreenState createState() => ViewDetailsScreenState(); // Updated to public class
 }
 
-class _ViewDetailsScreenState extends State<ViewDetailsScreen> {
+class ViewDetailsScreenState extends State<ViewDetailsScreen> { // Renamed to public class
   final Logger _logger = Logger('ViewDetailsScreen');
   Map<String, dynamic>? classDetails;
 
