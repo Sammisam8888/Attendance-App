@@ -119,7 +119,11 @@ class QRScanScreenState extends State<QRScanScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Scan QR Code')),
+      appBar: AppBar(
+        title: Text('Scan QR Code'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+      ),
       body: Column(
         children: [
           Expanded(

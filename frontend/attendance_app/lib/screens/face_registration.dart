@@ -124,7 +124,11 @@ class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove le
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Face Registration')),
+      appBar: AppBar(
+        title: Text('Face Registration'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+      ),
       body: _isCameraPermissionGranted
           ? Column(
               children: [

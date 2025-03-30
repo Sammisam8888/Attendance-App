@@ -126,24 +126,81 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        String classroom = '';
+        String block = '';
+        String floor = '';
+        String roomNumber = '';
         String branch = '';
         String semester = '';
-        String subject = '';
         String subjectCode = ''; // Add subject code
-        String timing = '';
+        String startTime = ''; // Change timing to startTime
         String notesLink = '';
+        TextEditingController timeController = TextEditingController(); // Add controller for time input
 
         return AlertDialog(
           title: Text('Add New Class Schedule'),
           content: SingleChildScrollView(
             child: Column(
               children: [
-                TextField(
-                  decoration: InputDecoration(labelText: 'Classroom'),
-                  onChanged: (value) {
-                    classroom = value;
-                  },
+                Text('Classroom', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), // Add heading
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(labelText: 'Block'),
+                        items: ['A', 'B', 'C', 'D'].map((block) {
+                          return DropdownMenuItem(
+                            value: block,
+                            child: Text(block),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            block = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(labelText: 'Floor'),
+                        items: ['Ground', '1st', '2nd'].map((floor) {
+                          return DropdownMenuItem(
+                            value: floor,
+                            child: Text(floor),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            floor = value!;
+                          });
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(labelText: 'Room Number'),
+                        items: (floor == 'Ground'
+                            ? List.generate(50, (index) => (101 + index).toString())
+                            : floor == '1st'
+                                ? List.generate(50, (index) => (201 + index).toString())
+                                : List.generate(50, (index) => (301 + index).toString()))
+                            .map((room) {
+                          return DropdownMenuItem(
+                            value: room,
+                            child: Text(room),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            roomNumber = value!;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: 'Branch'),
@@ -151,17 +208,21 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                     branch = value;
                   },
                 ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Semester'),
-                  onChanged: (value) {
-                    semester = value;
-                  },
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Subject'),
-                  onChanged: (value) {
-                    subject = value;
-                  },
+                Expanded(
+                  child: DropdownButtonFormField<String>(
+                    decoration: InputDecoration(labelText: 'Semester'),
+                    items: ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'].map((sem) {
+                      return DropdownMenuItem(
+                        value: sem,
+                        child: Text(sem),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        semester = value!;
+                      });
+                    },
+                  ),
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: 'Subject Code'),
@@ -170,7 +231,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                   },
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Timing'),
+                  decoration: InputDecoration(labelText: 'Start Time'),
                   onTap: () async {
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: context,
@@ -178,15 +239,16 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                     );
                     if (pickedTime != null) {
                       setState(() {
-                        timing = pickedTime.format(context);
+                        startTime = pickedTime.format(context);
+                        timeController.text = startTime; // Update the controller text
                       });
                     }
                   },
                   readOnly: true,
-                  controller: TextEditingController(text: timing),
+                  controller: timeController, // Use the controller
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Notes Link'),
+                  decoration: InputDecoration(labelText: 'Notes Link (Optional)'),
                   onChanged: (value) {
                     notesLink = value;
                   },
@@ -199,12 +261,11 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
               onPressed: () async {
                 setState(() {
                   classList.add({
-                    'classroom': classroom,
+                    'classroom': '$block$roomNumber',
                     'branch': branch,
                     'semester': semester,
-                    'subject': subject,
                     'subjectCode': subjectCode, // Add subject code
-                    'timing': timing,
+                    'timing': startTime, // Change timing to startTime
                     'notesLink': notesLink,
                   });
                 });
@@ -212,12 +273,11 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                   Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/store_class_schedule'),
                   headers: {"Content-Type": "application/json"},
                   body: jsonEncode({
-                    'classroom': classroom,
+                    'classroom': '$block$roomNumber',
                     'branch': branch,
                     'semester': semester,
-                    'subject': subject,
                     'subject_code': subjectCode, // Add subject code
-                    'timing': timing,
+                    'timing': startTime, // Change timing to startTime
                     'notes_link': notesLink,
                   }),
                 );
@@ -254,6 +314,8 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
     return Scaffold(
       appBar: AppBar(
         title: Text('Teacher Dashboard'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
         actions: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),

@@ -42,7 +42,11 @@ class _StudentDashboardState extends State<StudentDashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Student Dashboard')),
+      appBar: AppBar(
+        title: Text('Student Dashboard'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+      ),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -52,17 +56,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
                 'Hello, $studentName',
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
               ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => QRScanScreen(),
-                  ),
-                );
-              },
-              child: Text('Scan QR Code'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -85,6 +78,17 @@ class _StudentDashboardState extends State<StudentDashboard> {
                   return ListTile(
                     title: Text("${classInfo['subject']} (${classInfo['subjectCode']})"), // Display subject code
                     subtitle: Text('${classInfo['teacher']} - ${classInfo['time']}'),
+                    trailing: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QRScanScreen(),
+                          ),
+                        );
+                      },
+                      child: Text('Scan QR'),
+                    ),
                   );
                 },
               ),
