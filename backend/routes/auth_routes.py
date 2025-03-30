@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from pymongo.errors import ServerSelectionTimeoutError
-
 from models.user_model import Student, Teacher
 from database import db
 auth_routes = Blueprint('auth_routes', __name__)

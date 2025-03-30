@@ -30,7 +30,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl:
   local_auth: ^2.1.7  # Updated to the latest stable version
   path_provider: ^2.0.12 # Updated to the latest stable version
   cupertino_icons: ^1.0.8
