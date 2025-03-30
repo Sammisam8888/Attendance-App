@@ -1,5 +1,5 @@
 from database import get_attendance_collection, get_class_collection
-from backend.models.attendance_model import AttendanceModel  # Ensure this import is correct
+from models.attendance_model import AttendanceModel  # Ensure this import is correct
 
 # Store attendance details for a specific subject
 def store_attendance(branch, year, subject_code, attendance_details):

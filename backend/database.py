@@ -1,7 +1,6 @@
 from pymongo import MongoClient
-
-from backend.models.attendance_model import AttendanceModel
-from backend.models.user_model import Student
+from models.user_model import Student
+from utils.db_utils import get_attendance_collection  # Updated import
 
 # Initialize MongoDB Connection
 client = MongoClient("mongodb://localhost:27017/")
@@ -13,9 +12,6 @@ def get_student_collection():
 
 def get_teacher_collection():
     return db.teachers
-
-def get_attendance_collection():
-    return db.attendance
 
 def get_class_collection():
     return db.classes

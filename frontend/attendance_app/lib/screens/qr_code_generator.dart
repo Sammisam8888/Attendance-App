@@ -6,15 +6,15 @@ import 'package:logging/logging.dart';
 
 class QRCodeGenerator extends StatefulWidget {
   final String classId;
-  final String subjectCode; // Add subject code
+  final String subjectCode;
 
-  QRCodeGenerator({required this.classId, required this.subjectCode}); // Add subject code
+  const QRCodeGenerator({super.key, required this.classId, required this.subjectCode});
 
   @override
-  _QRCodeGeneratorState createState() => _QRCodeGeneratorState();
+  QRCodeGeneratorState createState() => QRCodeGeneratorState();
 }
 
-class _QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProviderStateMixin {
+class QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProviderStateMixin {
   String qrImageUrl = '';
   List<Map<String, String>> studentList = [];
   Timer? _qrTimer;
@@ -36,7 +36,7 @@ class _QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProv
   void _startQrRefresh(String classId) {
     _qrTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
       final response = await http.get(
-        Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}'), // Updated URL
+        Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}'),
         headers: {
           'Authorization': 'Bearer YOUR_TOKEN_HERE',
         },
@@ -55,7 +55,7 @@ class _QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProv
 
   void _startAttendanceFetch(String classId) {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId'); // Updated URL
+      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId');
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {

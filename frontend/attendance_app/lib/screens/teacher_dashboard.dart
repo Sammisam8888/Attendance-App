@@ -125,7 +125,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
   void _showAddClassModal(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         String classroom = '';
         String branch = '';
         String semester = '';
@@ -173,12 +173,12 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                   decoration: InputDecoration(labelText: 'Timing'),
                   onTap: () async {
                     TimeOfDay? pickedTime = await showTimePicker(
-                      context: context,
+                      context: dialogContext,
                       initialTime: TimeOfDay.now(),
                     );
-                    if (pickedTime != null) {
+                    if (pickedTime != null && mounted) {
                       setState(() {
-                        timing = pickedTime.format(context);
+                        timing = pickedTime.format(dialogContext);
                       });
                     }
                   },
@@ -197,17 +197,22 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
           actions: [
             TextButton(
               onPressed: () async {
-                setState(() {
-                  classList.add({
-                    'classroom': classroom,
-                    'branch': branch,
-                    'semester': semester,
-                    'subject': subject,
-                    'subjectCode': subjectCode, // Add subject code
-                    'timing': timing,
-                    'notesLink': notesLink,
+                final newClass = {
+                  'classroom': classroom,
+                  'branch': branch,
+                  'semester': semester,
+                  'subject': subject,
+                  'subjectCode': subjectCode, // Add subject code
+                  'timing': timing,
+                  'notesLink': notesLink,
+                };
+
+                if (mounted) {
+                  setState(() {
+                    classList.add(newClass);
                   });
-                });
+                }
+
                 final response = await http.post(
                   Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/store_class_schedule'),
                   headers: {"Content-Type": "application/json"},
@@ -221,8 +226,9 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                     'notes_link': notesLink,
                   }),
                 );
-                if (response.statusCode == 200) {
-                  Navigator.of(context).pop();
+
+                if (response.statusCode == 200 && dialogContext.mounted) {
+                  Navigator.of(dialogContext).pop();
                 } else {
                   // Handle error
                 }
@@ -231,7 +237,9 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                if (dialogContext.mounted) {
+                  Navigator.of(dialogContext).pop();
+                }
               },
               child: Text('Cancel'),
             ),
@@ -258,7 +266,12 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(
-              onPressed: () => _showAddClassModal(context),
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Theme.of(context).primaryColor,
+                backgroundColor: Colors.white,
+                shadowColor: Colors.black.withAlpha((0.2 * 255).toInt()),
+                elevation: 3,
+              ),
               child: Row(
                 children: [
                   Icon(Icons.add),
@@ -266,12 +279,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                   Text('Add Class'),
                 ],
               ),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Theme.of(context).primaryColor,
-                backgroundColor: Colors.white,
-                shadowColor: Colors.black.withOpacity(0.2),
-                elevation: 3,
-              ),
+              onPressed: () => _showAddClassModal(context),
             ),
           ),
         ],
@@ -295,6 +303,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         ElevatedButton(
+                          child: Text("Activate QR"),
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -303,10 +312,10 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                               ),
                             );
                           },
-                          child: Text("Activate QR"),
                         ),
                         SizedBox(width: 8),
                         ElevatedButton(
+                          child: Text("View Details"),
                           onPressed: () {
                             Navigator.push(
                               context,
@@ -315,13 +324,12 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                               ),
                             );
                           },
-                          child: Text("View Details"),
                         ),
                       ],
                     ),
                   ),
                 );
-              }).toList(),
+              }),
             ],
           ),
         ),
