@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask
 from routes.auth_routes import auth_routes
 from routes.qr_routes import qr_routes
 from routes.face_scanner_routes import face_scanner_routes
@@ -13,4 +13,4 @@ app.register_blueprint(face_scanner_routes, url_prefix='/face_scanner')
 app.register_blueprint(attendance_routes, url_prefix='/attendance')
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)  # Explicitly set the port to 5000
+    app.run(debug=True)

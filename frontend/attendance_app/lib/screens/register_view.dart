@@ -87,7 +87,7 @@ class RegisterScreenState extends State<RegisterScreen> {
       appBar: AppBar(
         title: Text('Register'),
         elevation: 4.0, // Add shadow
-        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+        shadowColor: const Color.fromARGB(127, 0, 0, 0), // 127 is 50% opacity
       ),
       body: SingleChildScrollView( // Wrap the body in SingleChildScrollView
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // Dismiss keyboard on scroll

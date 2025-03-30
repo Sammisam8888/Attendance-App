@@ -1,16 +1,17 @@
 from flask import Blueprint, request, jsonify
 from pymongo.errors import ServerSelectionTimeoutError
+
 from models.user_model import Student, Teacher
 from database import db
 auth_routes = Blueprint('auth_routes', __name__)
 def add_sample_data():
     try:
-        if not Teacher.find_by_email("t"):
-            sample_teacher = Teacher(name="Teacher", email="t", password="t", teacher_id="T1001", subject_specialisation="Math", assigned_classes=["Class1"])
+        if not Teacher.find_by_email("sam@gmail.com"):
+            sample_teacher = Teacher(name="Sam", email="sam@gmail.com", password="sammisam", teacher_id="T1001")
             sample_teacher.save_to_db()
         
-        if not Student.find_by_email("s"):
-            sample_student = Student(name="Sammi", email="s", password="s", roll_no="s", branch="CS", semester="5", subject_code="CS101")
+        if not Student.find_by_email("sammi@gmail.com"):
+            sample_student = Student(name="Sammi", email="sammi@gmail.com", password="player", roll_no="S1001")
             sample_student.save_to_db()
     except ServerSelectionTimeoutError:
         print("Database connection error. Could not add sample data.")

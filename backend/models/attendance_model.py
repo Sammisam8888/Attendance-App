@@ -1,26 +1,31 @@
-from utils.db_utils import get_attendance_collection  # Updated import
+from database import db
 
 class AttendanceModel:
-    def mark_attendance(self, email, name, roll_no, timestamp, subject_code, classroom_number):
-        attendance_collection = get_attendance_collection()
-        attendance_collection.insert_one({
+    collection = db.attendance
+
+    @staticmethod
+    def mark_attendance(email, name, roll_no, timestamp, subject_name, classroom_number):
+        record = {
             "email": email,
             "name": name,
             "roll_no": roll_no,
             "timestamp": timestamp,
-            "subject_code": subject_code,
+            "subject_name": subject_name,
             "classroom_number": classroom_number
-        })
+        }
+        AttendanceModel.collection.insert_one(record)
+        return True
 
-    def get_all_attendance(self):
-        attendance_collection = get_attendance_collection()
-        return list(attendance_collection.find({}, {"_id": 0}))
+    @staticmethod
+    def get_all_attendance():
+        return list(AttendanceModel.collection.find({}, {"_id": 0}))
 
-    def get_attendance_by_field(self, field, value):
-        attendance_collection = get_attendance_collection()
-        return list(attendance_collection.find({field: value}, {"_id": 0}))
+    @staticmethod
+    def get_attendance_by_field(field, value):
+        return list(AttendanceModel.collection.find({field: value}, {"_id": 0, "timestamp": 1}))
 
-    def delete_attendance_by_email(self, email):
-        attendance_collection = get_attendance_collection()
-        attendance_collection.delete_many({"email": email})
+    @staticmethod
+    def delete_attendance_by_email(email):
+        AttendanceModel.collection.delete_many({"email": email})
+        return True
 

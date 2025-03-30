@@ -127,7 +127,8 @@ class FaceRegistrationScreenState extends State<FaceRegistration> { // Remove le
       appBar: AppBar(
         title: Text('Face Registration'),
         elevation: 4.0, // Add shadow
-        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+        shadowColor: Color.fromARGB(
+          Colors.black.toARGB32() >> 24, 0, 0, 0), // Use toARGB32 for explicit conversion
       ),
       body: _isCameraPermissionGranted
           ? Column(

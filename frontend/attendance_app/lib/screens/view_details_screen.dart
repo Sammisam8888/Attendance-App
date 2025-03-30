@@ -45,7 +45,7 @@ class ViewDetailsScreenState extends State<ViewDetailsScreen> { // Renamed to pu
       appBar: AppBar(
         title: Text('Class Details'),
         elevation: 4.0, // Add shadow
-        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+        shadowColor: Colors.black.withAlpha(128), // Customize shadow color using withAlpha
       ),
       body: classDetails == null
           ? Center(child: CircularProgressIndicator())

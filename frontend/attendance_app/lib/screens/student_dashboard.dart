@@ -45,7 +45,7 @@ class StudentDashboardState extends State<StudentDashboard> { // Made public
       appBar: AppBar(
         title: Text('Student Dashboard'),
         elevation: 4.0, // Add shadow
-        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+        shadowColor: const Color.fromARGB(127, 0, 0, 0), // 127 is 50% opacity
       ),
       body: SingleChildScrollView(
         child: Column(
