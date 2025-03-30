@@ -116,7 +116,11 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(
+        title: Text('Login'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+      ),
       body: SingleChildScrollView( // Wrap the body in SingleChildScrollView
         keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // Dismiss keyboard on scroll
         child: Padding(

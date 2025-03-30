@@ -30,11 +30,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  
-  local_auth: ^2.1.7  # Replace with the actual latest stable version
-  path_provider: ^2.0.12 # Replace with the actual latest stable version
+  intl:
+  local_auth: ^2.1.7  # Updated to the latest stable version
+  path_provider: ^2.0.12 # Updated to the latest stable version
   cupertino_icons: ^1.0.8
-  http: ^1.1.0 # Replace with the actual latest stable version
+  http: ^1.1.0 # Updated to the latest stable version
   camera: ^0.11.1  # Add camera package for face scanning
   image_picker: ^1.1.2  # Add image picker package for face scanning
   qr_code_scanner_plus: ^2.0.10+1  # Corrected version

@@ -1,0 +1,50 @@
+.themeToggle {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.themeToggleInput {
+  display: none;
+}
+
+.sunMoon {
+  transition: fill 0.3s ease;
+}
+
+.sunRay {
+  transition: opacity 0.3s ease;
+}
+
+.themeToggleInput:checked + svg .sunMoon {
+  fill: #f39c12; /* Sun color */
+}
+
+.themeToggleInput:checked + svg .sunRay {
+  opacity: 1;
+}
+
+.themeToggleInput:not(:checked) + svg .sunMoon {
+  fill: #2c3e50; /* Moon color */
+}
+
+.themeToggleInput:not(:checked) + svg .sunRay {
+  opacity: 0;
+}
+
+.themeToggle svg {
+  transform: rotate(65deg);
+}
+
+body.dark-mode {
+  background-color: #121212;
+  color: #ffffff;
+}
+
+body.dark-mode .themeToggle svg .sunMoon {
+  fill: #f39c12; /* Sun color */
+}
+
+body.dark-mode .themeToggle svg .sunRay {
+  opacity: 1;
+}

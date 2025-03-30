@@ -42,7 +42,11 @@ class ViewDetailsScreenState extends State<ViewDetailsScreen> { // Renamed to pu
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Class Details')),
+      appBar: AppBar(
+        title: Text('Class Details'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+      ),
       body: classDetails == null
           ? Center(child: CircularProgressIndicator())
           : Padding(

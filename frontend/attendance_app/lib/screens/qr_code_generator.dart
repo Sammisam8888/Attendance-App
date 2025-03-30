@@ -106,7 +106,11 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProvi
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('QR Code Generator')),
+      appBar: AppBar(
+        title: Text('QR Code Generator'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),

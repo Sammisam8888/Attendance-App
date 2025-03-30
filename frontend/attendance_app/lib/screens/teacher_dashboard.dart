@@ -126,24 +126,75 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
-        String classroom = '';
+        String block = '';
+        String floor = '';
+        String roomNumber = '';
         String branch = '';
         String semester = '';
-        String subject = '';
-        String subjectCode = ''; // Add subject code
-        String timing = '';
+        String subjectCode = '';
+        String startTime = '';
         String notesLink = '';
+        TextEditingController timeController = TextEditingController();
 
         return AlertDialog(
           title: Text('Add New Class Schedule'),
           content: SingleChildScrollView(
             child: Column(
               children: [
-                TextField(
-                  decoration: InputDecoration(labelText: 'Classroom'),
-                  onChanged: (value) {
-                    classroom = value;
-                  },
+                Text('Classroom', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(labelText: 'Block'),
+                        items: ['A', 'B', 'C', 'D'].map((block) {
+                          return DropdownMenuItem(
+                            value: block,
+                            child: Text(block),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          block = value!;
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(labelText: 'Floor'),
+                        items: ['Ground', '1st', '2nd'].map((floor) {
+                          return DropdownMenuItem(
+                            value: floor,
+                            child: Text(floor),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          floor = value!;
+                        },
+                      ),
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
+                      child: DropdownButtonFormField<String>(
+                        decoration: InputDecoration(labelText: 'Room Number'),
+                        items: (floor == 'Ground'
+                            ? List.generate(50, (index) => (101 + index).toString())
+                            : floor == '1st'
+                                ? List.generate(50, (index) => (201 + index).toString())
+                                : List.generate(50, (index) => (301 + index).toString()))
+                            .map((room) {
+                          return DropdownMenuItem(
+                            value: room,
+                            child: Text(room),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          roomNumber = value!;
+                        },
+                      ),
+                    ),
+                  ],
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: 'Branch'),
@@ -151,16 +202,16 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                     branch = value;
                   },
                 ),
-                TextField(
+                DropdownButtonFormField<String>(
                   decoration: InputDecoration(labelText: 'Semester'),
+                  items: ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'].map((sem) {
+                    return DropdownMenuItem(
+                      value: sem,
+                      child: Text(sem),
+                    );
+                  }).toList(),
                   onChanged: (value) {
-                    semester = value;
-                  },
-                ),
-                TextField(
-                  decoration: InputDecoration(labelText: 'Subject'),
-                  onChanged: (value) {
-                    subject = value;
+                    semester = value!;
                   },
                 ),
                 TextField(
@@ -170,23 +221,22 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                   },
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Timing'),
+                  decoration: InputDecoration(labelText: 'Start Time'),
                   onTap: () async {
                     TimeOfDay? pickedTime = await showTimePicker(
                       context: dialogContext,
                       initialTime: TimeOfDay.now(),
                     );
-                    if (pickedTime != null && mounted) {
-                      setState(() {
-                        timing = pickedTime.format(dialogContext);
-                      });
+                    if (pickedTime != null) {
+                      startTime = pickedTime.format(dialogContext);
+                      timeController.text = startTime;
                     }
                   },
                   readOnly: true,
-                  controller: TextEditingController(text: timing),
+                  controller: timeController,
                 ),
                 TextField(
-                  decoration: InputDecoration(labelText: 'Notes Link'),
+                  decoration: InputDecoration(labelText: 'Notes Link (Optional)'),
                   onChanged: (value) {
                     notesLink = value;
                   },
@@ -198,37 +248,36 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
             TextButton(
               onPressed: () async {
                 final newClass = {
-                  'classroom': classroom,
+                  'classroom': '$block$roomNumber',
                   'branch': branch,
                   'semester': semester,
-                  'subject': subject,
-                  'subjectCode': subjectCode, // Add subject code
-                  'timing': timing,
+                  'subjectCode': subjectCode,
+                  'timing': startTime,
                   'notesLink': notesLink,
                 };
 
-                if (mounted) {
-                  setState(() {
-                    classList.add(newClass);
-                  });
-                }
+                // Store the dialog context locally to avoid async context issues
+                final localContext = dialogContext;
+
+                setState(() {
+                  classList.add(newClass);
+                });
 
                 final response = await http.post(
                   Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/store_class_schedule'),
                   headers: {"Content-Type": "application/json"},
                   body: jsonEncode({
-                    'classroom': classroom,
+                    'classroom': '$block$roomNumber',
                     'branch': branch,
                     'semester': semester,
-                    'subject': subject,
-                    'subject_code': subjectCode, // Add subject code
-                    'timing': timing,
+                    'subject_code': subjectCode,
+                    'timing': startTime,
                     'notes_link': notesLink,
                   }),
                 );
 
-                if (response.statusCode == 200 && dialogContext.mounted) {
-                  Navigator.of(dialogContext).pop();
+                if (response.statusCode == 200 && mounted) {
+                  Navigator.of(localContext).pop(); // Use local context
                 } else {
                   // Handle error
                 }
@@ -237,7 +286,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
             ),
             TextButton(
               onPressed: () {
-                if (dialogContext.mounted) {
+                if (mounted) {
                   Navigator.of(dialogContext).pop();
                 }
               },
@@ -262,6 +311,8 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
     return Scaffold(
       appBar: AppBar(
         title: Text('Teacher Dashboard'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
         actions: [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),

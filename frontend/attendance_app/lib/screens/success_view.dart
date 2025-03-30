@@ -9,7 +9,11 @@ class SuccessScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Attendance Success')),
+      appBar: AppBar(
+        title: Text('Attendance Success'),
+        elevation: 4.0, // Add shadow
+        shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
