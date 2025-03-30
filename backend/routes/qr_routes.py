@@ -20,7 +20,7 @@ def verify_qr():
     email = data.get('email')
     subject_code = data.get('subject_code')
 
-    if validate_token(scanned_token):  # Use MongoDB-backed token validation
+    if validate_token(scanned_token):  # Use JWT-backed token validation
         student = Student.find_by_email(email)
         if student and student["subject_code"] == subject_code:
             return jsonify({

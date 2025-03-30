@@ -1,4 +1,4 @@
-from database import get_attendance_collection
+from utils.db_utils import get_attendance_collection  # Updated import
 
 class AttendanceModel:
     def mark_attendance(self, email, name, roll_no, timestamp, subject_code, classroom_number):

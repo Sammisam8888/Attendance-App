@@ -12,10 +12,5 @@ app.register_blueprint(qr_routes, url_prefix='/qr')
 app.register_blueprint(face_scanner_routes, url_prefix='/face_scanner')
 app.register_blueprint(attendance_routes, url_prefix='/attendance')
 
-# Add a basic landing page
-@app.route('/')
-def landing_page():
-    return jsonify({"message": "Welcome to the Attendance App Backend!"})
-
 if __name__ == '__main__':
     app.run(debug=True, port=5000)  # Explicitly set the port to 5000

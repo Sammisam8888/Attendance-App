@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from attendance import store_attendance, get_attendance, store_class_schedule, get_all_class_schedules, get_attended_classes, generate_sample_attendance
-from backend.models.attendance_model import AttendanceModel
+from models.attendance_model import AttendanceModel
 
 attendance_routes = Blueprint('attendance_routes', __name__)
 attendance_model = AttendanceModel()  # Instantiate the class

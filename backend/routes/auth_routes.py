@@ -1,9 +1,8 @@
 from flask import Blueprint, request, jsonify
 from pymongo.errors import ServerSelectionTimeoutError
-auth_routes = Blueprint('auth_routes', __name__)
 from models.user_model import Student, Teacher
 from database import db
-
+auth_routes = Blueprint('auth_routes', __name__)
 def add_sample_data():
     try:
         if not Teacher.find_by_email("t"):
