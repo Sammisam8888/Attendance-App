@@ -125,23 +125,23 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
   void _showAddClassModal(BuildContext context) {
     showDialog(
       context: context,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         String block = '';
         String floor = '';
         String roomNumber = '';
         String branch = '';
         String semester = '';
-        String subjectCode = ''; // Add subject code
-        String startTime = ''; // Change timing to startTime
+        String subjectCode = '';
+        String startTime = '';
         String notesLink = '';
-        TextEditingController timeController = TextEditingController(); // Add controller for time input
+        TextEditingController timeController = TextEditingController();
 
         return AlertDialog(
           title: Text('Add New Class Schedule'),
           content: SingleChildScrollView(
             child: Column(
               children: [
-                Text('Classroom', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)), // Add heading
+                Text('Classroom', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 SizedBox(height: 8),
                 Row(
                   children: [
@@ -155,9 +155,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                           );
                         }).toList(),
                         onChanged: (value) {
-                          setState(() {
-                            block = value!;
-                          });
+                          block = value!;
                         },
                       ),
                     ),
@@ -172,9 +170,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                           );
                         }).toList(),
                         onChanged: (value) {
-                          setState(() {
-                            floor = value!;
-                          });
+                          floor = value!;
                         },
                       ),
                     ),
@@ -194,9 +190,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                           );
                         }).toList(),
                         onChanged: (value) {
-                          setState(() {
-                            roomNumber = value!;
-                          });
+                          roomNumber = value!;
                         },
                       ),
                     ),
@@ -208,21 +202,17 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                     branch = value;
                   },
                 ),
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    decoration: InputDecoration(labelText: 'Semester'),
-                    items: ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'].map((sem) {
-                      return DropdownMenuItem(
-                        value: sem,
-                        child: Text(sem),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        semester = value!;
-                      });
-                    },
-                  ),
+                DropdownButtonFormField<String>(
+                  decoration: InputDecoration(labelText: 'Semester'),
+                  items: ['1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th'].map((sem) {
+                    return DropdownMenuItem(
+                      value: sem,
+                      child: Text(sem),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    semester = value!;
+                  },
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: 'Subject Code'),
@@ -237,14 +227,13 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                       context: dialogContext,
                       initialTime: TimeOfDay.now(),
                     );
-                    if (pickedTime != null && mounted) {
-                      setState(() {
-                        timing = pickedTime.format(dialogContext);
-                      });
+                    if (pickedTime != null) {
+                      startTime = pickedTime.format(dialogContext);
+                      timeController.text = startTime;
                     }
                   },
                   readOnly: true,
-                  controller: timeController, // Use the controller
+                  controller: timeController,
                 ),
                 TextField(
                   decoration: InputDecoration(labelText: 'Notes Link (Optional)'),
@@ -258,16 +247,21 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
           actions: [
             TextButton(
               onPressed: () async {
+                final newClass = {
+                  'classroom': '$block$roomNumber',
+                  'branch': branch,
+                  'semester': semester,
+                  'subjectCode': subjectCode,
+                  'timing': startTime,
+                  'notesLink': notesLink,
+                };
+
+                // Store the dialog context locally to avoid async context issues
+                final localContext = dialogContext;
+
                 setState(() {
-                  classList.add({
-                    'classroom': '$block$roomNumber',
-                    'branch': branch,
-                    'semester': semester,
-                    'subjectCode': subjectCode, // Add subject code
-                    'timing': startTime, // Change timing to startTime
-                    'notesLink': notesLink,
-                  });
-                }
+                  classList.add(newClass);
+                });
 
                 final response = await http.post(
                   Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/store_class_schedule'),
@@ -276,14 +270,14 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
                     'classroom': '$block$roomNumber',
                     'branch': branch,
                     'semester': semester,
-                    'subject_code': subjectCode, // Add subject code
-                    'timing': startTime, // Change timing to startTime
+                    'subject_code': subjectCode,
+                    'timing': startTime,
                     'notes_link': notesLink,
                   }),
                 );
 
-                if (response.statusCode == 200 && dialogContext.mounted) {
-                  Navigator.of(dialogContext).pop();
+                if (response.statusCode == 200 && mounted) {
+                  Navigator.of(localContext).pop(); // Use local context
                 } else {
                   // Handle error
                 }
@@ -292,7 +286,7 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
             ),
             TextButton(
               onPressed: () {
-                if (dialogContext.mounted) {
+                if (mounted) {
                   Navigator.of(dialogContext).pop();
                 }
               },
