@@ -8,6 +8,7 @@ import hashlib
 import qrcode
 import cv2
 import dlib
+import os
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
 
@@ -156,8 +157,9 @@ class AttendanceModel:
 # Load Dlib's face detector and models
 detector = dlib.get_frontal_face_detector()
 try:
-    sp = dlib.shape_predictor("utils/models/shape_predictor_68_face_landmarks.dat")
-    facerec = dlib.face_recognition_model_v1("utils/models/dlib_face_recognition_resnet_model_v1.dat")
+    model_dir = os.path.join(os.path.dirname(__file__), "models")
+    sp = dlib.shape_predictor(os.path.join(model_dir, "shape_predictor_68_face_landmarks.dat"))
+    facerec = dlib.face_recognition_model_v1(os.path.join(model_dir, "dlib_face_recognition_resnet_model_v1.dat"))
 except RuntimeError:
     print("Error: Could not load face recognition models. Make sure the model files exist.")
     sp = None
@@ -389,12 +391,12 @@ def generate_sample_attendance():
 
 def add_sample_data():
     try:
-        if not Teacher.find_by_email("sam@gmail.com"):
-            sample_teacher = Teacher(name="Sam", email="sam@gmail.com", password="sammisam", teacher_id="T1001")
+        if not Teacher.find_by_email("s"):
+            sample_teacher = Teacher(name="s", email="s", password="s", teacher_id="s")
             sample_teacher.save_to_db()
         
-        if not Student.find_by_email("sammi@gmail.com"):
-            sample_student = Student(name="Sammi", email="sammi@gmail.com", password="player", roll_no="S1001")
+        if not Student.find_by_email("s"):
+            sample_student = Student(name="s", email="s", password="s", roll_no="s")
             sample_student.save_to_db()
     except ServerSelectionTimeoutError:
         print("Database connection error. Could not add sample data.")
