@@ -5,18 +5,18 @@ attendance_routes = Blueprint('attendance_routes', __name__)
 
 @attendance_routes.route('/mark_attendance', methods=['POST'])
 def mark_attendance():
-    data = request.json
+    data = request.get_json()
     email = data.get('email')
     name = data.get('name')
-    roll_no = data.get('roll_no')
+    reg_no = data.get('reg_no')
     timestamp = data.get('timestamp')
     subject_name = data.get('subject_name')
     classroom_number = data.get('classroom_number')
     
-    if not email or not name or not roll_no or not timestamp or not subject_name or not classroom_number:
+    if not email or not name or not reg_no or not timestamp or not subject_name or not classroom_number:
         return jsonify({"message": "Missing data"}), 400
     
-    AttendanceModel.mark_attendance(email, name, roll_no, timestamp, subject_name, classroom_number)
+    AttendanceModel.mark_attendance(email, name, reg_no, timestamp, subject_name, classroom_number)
     return jsonify({"message": "Attendance marked successfully"}), 200
 
 
@@ -35,13 +35,13 @@ def get_attendance_by_email():
     attendance_records = AttendanceModel.get_attendance_by_field('email', email)
     return jsonify(attendance_records), 200
 
-@attendance_routes.route('/get_attendance_by_roll_no', methods=['GET'])
-def get_attendance_by_roll_no():
-    roll_no = request.args.get('roll_no')
-    if not roll_no:
+@attendance_routes.route('/get_attendance_by_reg_no', methods=['GET'])
+def get_attendance_by_reg_no():
+    reg_no = request.args.get('reg_no')
+    if not reg_no:
         return jsonify({"message": "Roll number is required"}), 400
     
-    attendance_records = AttendanceModel.get_attendance_by_field('roll_no', roll_no)
+    attendance_records = AttendanceModel.get_attendance_by_field('reg_no', reg_no)
     return jsonify(attendance_records), 200
 
 @attendance_routes.route('/delete_attendance_by_email', methods=['DELETE'])

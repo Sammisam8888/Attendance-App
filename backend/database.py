@@ -11,6 +11,13 @@ def get_student_collection():
 def get_teacher_collection():
     return db.teachers
 
+def get_qr_sessions():    
+    return db.qr_sessions
+
+
+def get_attendance_collection():
+    return db.attendance
+
 # Store face encoding inside the students collection
 def store_face_encoding(roll_no, encoding):
     """Stores a student's face encoding inside the students collection."""
