@@ -1,4 +1,5 @@
-from flask import Flask, Blueprint, request, jsonify, send_file
+from flask import Flask, Blueprint, request, jsonify, send_file, session
+from datetime import timedelta, datetime
 from passlib.hash import pbkdf2_sha256 as sha256
 import uuid
 import numpy as np
@@ -14,6 +15,31 @@ from pymongo.errors import ServerSelectionTimeoutError
 
 # Initialize Flask app
 app = Flask(__name__)
+
+# Configure session
+app.secret_key = "your_secret_key"  # Replace with a secure key
+app.permanent_session_lifetime = timedelta(minutes=15)  # Set session timeout to 15 minutes
+
+@app.before_request
+def make_session_permanent():
+    """
+    Refresh session timeout on each request if the user is logged in.
+    """
+    session.permanent = True
+    if "user" in session:
+        session.modified = True
+
+@app.before_request
+def check_session_timeout():
+    """
+    Check if the session has expired. If expired, clear the session and return an error.
+    """
+    user_session = session.get("user")
+    if user_session:
+        login_time = datetime.fromisoformat(user_session["login_time"])
+        if datetime.utcnow() - login_time > timedelta(minutes=15):
+            session.pop("user", None)
+            return jsonify({"message": "Session expired. Please log in again."}), 401
 
 # Initialize MongoDB Connection
 client = MongoClient("mongodb://localhost:27017/")
@@ -423,6 +449,7 @@ def student_login():
     try:
         student = Student.find_by_email(data["email"])
         if student and Student.verify_password(data["password"], student["password"]):
+            session["user"] = {"email": student["email"], "role": "student", "login_time": datetime.utcnow().isoformat()}
             return jsonify({"message": "Login successful"}), 200
         return jsonify({"message": "Invalid credentials"}), 400
     except ServerSelectionTimeoutError:
@@ -443,10 +470,19 @@ def teacher_login():
     try:
         teacher = Teacher.find_by_email(data["email"])
         if teacher and Teacher.verify_password(data["password"], teacher["password"]):
+            session["user"] = {"email": teacher["email"], "role": "teacher", "login_time": datetime.utcnow().isoformat()}
             return jsonify({"message": "Login successful"}), 200
         return jsonify({"message": "Invalid credentials"}), 400
     except ServerSelectionTimeoutError:
         return jsonify({"message": "Database connection error"}), 500
+
+@app.route('/auth/logout', methods=['POST'])
+def logout():
+    """
+    Handle logout requests. Clear the session.
+    """
+    session.pop("user", None)
+    return jsonify({"message": "Logout successful"}), 200
 
 # ------------------------
 # Routes - QR Code

@@ -124,6 +124,14 @@ class QRScanScreenState extends State<QRScanScreen> {
         elevation: 4.0, // Add shadow
         shadowColor: Color.fromARGB(
           Colors.black.toARGB32() >> 24, 0, 0, 0), // Use toARGB32 for explicit conversion
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login'); // Redirect to login page
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [

@@ -13,6 +13,14 @@ class SuccessScreen extends StatelessWidget {
         title: Text('Attendance Success'),
         elevation: 4.0, // Add shadow
         shadowColor: const Color.fromARGB(127, 0, 0, 0), // 127 is 50% opacity
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login'); // Redirect to login page
+            },
+          ),
+        ],
       ),
       body: Center(
         child: Column(

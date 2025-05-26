@@ -314,6 +314,12 @@ class TeacherDashboardState extends State<TeacherDashboard> with SingleTickerPro
         elevation: 4.0, // Add shadow
         shadowColor: Colors.black.withOpacity(0.5), // Customize shadow color
         actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login'); // Redirect to login page
+            },
+          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: ElevatedButton(

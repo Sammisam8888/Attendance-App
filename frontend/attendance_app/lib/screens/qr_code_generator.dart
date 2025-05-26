@@ -110,6 +110,14 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProvi
         title: Text('QR Code Generator'),
         elevation: 4.0, // Add shadow
         shadowColor: const Color.fromARGB(127, 0, 0, 0), // 127 is 50% opacity
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login'); // Redirect to login page
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
