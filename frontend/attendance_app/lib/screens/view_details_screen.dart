@@ -46,6 +46,14 @@ class ViewDetailsScreenState extends State<ViewDetailsScreen> { // Renamed to pu
         title: Text('Class Details'),
         elevation: 4.0, // Add shadow
         shadowColor: Colors.black.withAlpha(128), // Customize shadow color using withAlpha
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login'); // Redirect to login page
+            },
+          ),
+        ],
       ),
       body: classDetails == null
           ? Center(child: CircularProgressIndicator())

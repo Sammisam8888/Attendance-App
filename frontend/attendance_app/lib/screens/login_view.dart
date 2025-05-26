@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:local_auth/local_auth.dart'; // Import for local authentication
+import 'package:flutter/services.dart'; // Import for handling platform exceptions
 import 'teacher_dashboard.dart';
 import 'student_dashboard.dart';
 import 'register_view.dart';
 import 'package:logging/logging.dart'; // Add this import
+import 'package:shared_preferences/shared_preferences.dart'; // Import for storing credentials
+import 'dart:io'; // Import for platform detection
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -20,7 +24,54 @@ class LoginScreenState extends State<LoginScreen> {
   String _role = '';
   bool _isLoading = false;
   bool _passwordVisible = false; // Password visibility toggle
+  bool _rememberMe = false; // Remember Me toggle
   final Logger logger = Logger('LoginScreen'); // Add this line
+  final LocalAuthentication auth = LocalAuthentication(); // Local authentication instance
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedEmail = _role == 'Teacher'
+        ? prefs.getString('teacher_email')
+        : prefs.getString('student_email');
+    final savedPassword = _role == 'Teacher'
+        ? prefs.getString('teacher_password')
+        : prefs.getString('student_password');
+
+    if (savedEmail != null && savedPassword != null) {
+      final isAuthenticated = await _authenticateWithBiometrics();
+      if (isAuthenticated) {
+        setState(() {
+          _emailController.text = savedEmail;
+          _passwordController.text = savedPassword;
+          _rememberMe = true;
+        });
+      }
+    }
+  }
+
+  Future<bool> _authenticateWithBiometrics() async {
+    try {
+      final isAvailable = await auth.canCheckBiometrics;
+      if (!isAvailable) return false;
+
+      return await auth.authenticate(
+        localizedReason: 'Authenticate to autofill your credentials',
+        options: const AuthenticationOptions(
+          biometricOnly: true,
+          stickyAuth: true,
+        ),
+      );
+    } on PlatformException catch (e) {
+      logger.warning("Biometric authentication failed: $e");
+      return false;
+    }
+  }
 
   Future<void> _login() async {
     setState(() {
@@ -28,8 +79,8 @@ class LoginScreenState extends State<LoginScreen> {
     });
 
     final String loginEndpoint = _role == 'Teacher'
-        ? 'https://vv861fqc-5000.inc1.devtunnels.ms/auth/teacher/login'
-        : 'https://vv861fqc-5000.inc1.devtunnels.ms/auth/student/login';
+        ? 'https://rvhhpqvm-5000.inc1.devtunnels.ms/auth/teacher/login'
+        : 'https://rvhhpqvm-5000.inc1.devtunnels.ms/auth/student/login';
 
     final body = {
       "email": _emailController.text.trim(),
@@ -37,7 +88,7 @@ class LoginScreenState extends State<LoginScreen> {
     };
 
     if (_role == 'Student') {
-      body["roll_no"] = _rollNoController.text.trim(); // Add this line
+      body["roll_no"] = _rollNoController.text.trim();
     }
 
     final response = await http.post(
@@ -55,6 +106,16 @@ class LoginScreenState extends State<LoginScreen> {
     if (!mounted) return;
 
     if (response.statusCode == 200) {
+      if (_rememberMe) {
+        final prefs = await SharedPreferences.getInstance();
+        if (_role == 'Teacher') {
+          await prefs.setString('teacher_email', _emailController.text.trim());
+          await prefs.setString('teacher_password', _passwordController.text.trim());
+        } else {
+          await prefs.setString('student_email', _emailController.text.trim());
+          await prefs.setString('student_password', _passwordController.text.trim());
+        }
+      }
       _showAlertDialog("Success", result["message"] ?? "Login Successful ✅", true);
     } else {
       _showAlertDialog("Error", result["message"] ?? "Login Failed ❌", false);
@@ -157,6 +218,19 @@ class LoginScreenState extends State<LoginScreen> {
                 title: Text('Role: $_role'),
                 trailing: Icon(Icons.arrow_drop_down),
                 onTap: _showRoleSelection,
+              ),
+              Row(
+                children: [
+                  Checkbox(
+                    value: _rememberMe,
+                    onChanged: (value) {
+                      setState(() {
+                        _rememberMe = value!;
+                      });
+                    },
+                  ),
+                  Text('Remember Me'),
+                ],
               ),
               SizedBox(height: 20),
               _isLoading

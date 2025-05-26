@@ -1,12 +1,12 @@
 plugins {
-    id("com.android.application")
-    id("kotlin-android")
-    id("dev.flutter.flutter-gradle-plugin")
+    id("com.android.application") version "8.1.0" apply false
+    id("kotlin-android") version "1.8.10" apply false
+    id("dev.flutter.flutter-gradle-plugin") version "1.0.0" apply false
 }
 
 android {
     namespace = "com.example.attendance_app"
-    compileSdk = 35  // Updated from 35 to 34 for better compatibility
+    compileSdk = 34  // Updated from 35 to 34 for better compatibility
 
     defaultConfig {
         applicationId = "com.example.attendance_app"

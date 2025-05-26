@@ -36,14 +36,14 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProvi
   void _startQrRefresh(String classId) {
     _qrTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
       final response = await http.get(
-        Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}'),
+        Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}'),
         headers: {
           'Authorization': 'Bearer YOUR_TOKEN_HERE',
         },
       );
       if (response.statusCode == 200) {
         setState(() {
-          qrImageUrl = 'https://vv861fqc-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}';
+          qrImageUrl = 'https://rvhhpqvm-5000.inc1.devtunnels.ms/qr/teacher/get_qr?classId=$classId&subjectCode=${widget.subjectCode}&timestamp=${DateTime.now().millisecondsSinceEpoch}';
           _animationController.reset();
           _animationController.forward();
         });
@@ -55,7 +55,7 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProvi
 
   void _startAttendanceFetch(String classId) {
     _attendanceTimer = Timer.periodic(Duration(seconds: 3), (timer) async {
-      final url = Uri.parse('https://vv861fqc-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId');
+      final url = Uri.parse('https://rvhhpqvm-5000.inc1.devtunnels.ms/attendance/get_all_attendance?classId=$classId');
       try {
         final response = await http.get(url);
         if (response.statusCode == 200) {
@@ -110,6 +110,14 @@ class QRCodeGeneratorState extends State<QRCodeGenerator> with SingleTickerProvi
         title: Text('QR Code Generator'),
         elevation: 4.0, // Add shadow
         shadowColor: const Color.fromARGB(127, 0, 0, 0), // 127 is 50% opacity
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              Navigator.pushReplacementNamed(context, '/login'); // Redirect to login page
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
