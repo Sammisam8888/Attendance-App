@@ -3,7 +3,7 @@ from pymongo import MongoClient
 # Initialize MongoDB Connection
 client = MongoClient("mongodb://localhost:27017/")
 db = client["qr_attendance"]
-
+db.qr_sessions.create_index("expires_at", expireAfterSeconds=0)
 # Get the collections
 def get_student_collection():
     return db.students

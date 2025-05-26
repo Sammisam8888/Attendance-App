@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from flask import send_file
 from config import secrect_key
 import qrcode
@@ -7,8 +8,10 @@ from database import db
 import hashlib
 
 def generate_token(timestamp):
+    expires_at = datetime.fromtimestamp(timestamp) + timedelta(seconds=20)
     raw=f"{stream}:{year}:{semester}:{branch}:{section}:{subject_id}:{teacher_id}:{classroom}:{timestamp}:{secrect_key}"
     hash_value=hashlib.sha256(raw.encode()).hexdigest()
+    
     db.qr_sessions.insert_one({
     "stream": stream,
     "year": year,

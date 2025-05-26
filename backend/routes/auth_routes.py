@@ -20,7 +20,7 @@ auth_routes = Blueprint('auth_routes', __name__)
 @auth_routes.route('/student/signup', methods=['POST'])
 def student_signup():
     data = request.get_json()
-    student = Student(name=data["name"], email=data["email"], password=data["password"], reg_no=data["reg_no"])
+    student = Student(name=data["name"], email=data["email"], password=data["password"],reg_no=data["reg_no"])
     try:
         return jsonify(student.save_to_db())
     except ServerSelectionTimeoutError:

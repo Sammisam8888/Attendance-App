@@ -1,6 +1,5 @@
 from flask import Flask, send_file, jsonify, Blueprint, request
 from backend.utils.qr_codes import generate_qr, validate_token
-from models.user_model import Student
 import time
 
 qr_routes = Blueprint('qr_routes', __name__)
